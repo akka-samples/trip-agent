@@ -3,7 +3,8 @@ package com.lb.application.coordinator;
 import akka.javasdk.client.ComponentClient;
 import com.lb.api.*;
 import com.lb.application.FlightBookingEntity;
-import com.lb.application.models.FlightAgentChatModel;
+import com.lb.application.AccommodationBookingEntity;
+import com.lb.application.models.TripAgentChatModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
@@ -23,15 +24,15 @@ public class TripCoordinator {
 
   private static final Logger log = LoggerFactory.getLogger(TripCoordinator.class);
 
-  private final FlightAgentChatModel flightAgentChatModel;
+  private final TripAgentChatModel tripAgentChatModel;
   private final ComponentClient componentClient;
   private final ChatClient chatClient;
 
   public TripCoordinator(
-      FlightAgentChatModel flightAgentChatModel, ComponentClient componentClient) {
-    this.flightAgentChatModel = flightAgentChatModel;
+          TripAgentChatModel tripAgentChatModel, ComponentClient componentClient) {
+    this.tripAgentChatModel = tripAgentChatModel;
     this.componentClient = componentClient;
-    this.chatClient = ChatClient.create(flightAgentChatModel);
+    this.chatClient = ChatClient.create(tripAgentChatModel);
   }
 
   // Create queries to see top destinations
@@ -60,17 +61,7 @@ public class TripCoordinator {
             .call()
             .content();
 
-    log.info("responseFlights: {}", responseFlights);
-    // request flights
-    String onlyFlights = extractJson(responseFlights);
-    List<FlightAPIResponse> flightAPIResponses =
-        FlightAPIResponse.extract(new ByteArrayInputStream(onlyFlights.getBytes()));
-    log.info("only flights: {}", flightAPIResponses);
-    // load flights into entities
-    flightAPIResponses.forEach(
-        flight -> {
-          componentClient.forEventSourcedEntity(flight.id()).method(FlightBookingEntity::create);
-        });
+    storeFlights(responseFlights);
 
     // request accomodations
     String responseAccommodations =
@@ -83,15 +74,13 @@ public class TripCoordinator {
             .call()
             .content();
 
-    // load accomodatoins into entities
-    log.info("responseAccommodations: {}", responseAccommodations);
-    // send mail
+    storeAccommodations(responseAccommodations);
 
     String responseMail =
         chatClient
             .prompt(
                 String.format(
-                    "Send mail to %s, using the requestId %s and the content from %s and %s",
+                    "Send only once an email to %s, using the requestId %s and the content from %s and %s",
                     email, requestId, responseFlights, responseAccommodations))
             .tools(new EmailAPITool())
             .call()
@@ -119,5 +108,29 @@ public class TripCoordinator {
     String message = "Could not extract json from response";
     log.error("{}: {}",message, response);
     throw new IllegalArgumentException(message);
+  }
+
+  private void storeAccommodations(String chatResponseAccomodations) {
+    String onlyAccommodations = extractJson(chatResponseAccomodations);
+    List<AccommodationAPIResponse> accommodationAPIResponses =
+            AccommodationAPIResponse.extract(new ByteArrayInputStream(onlyAccommodations.getBytes()));
+    log.info("storing accommodations: {}", accommodationAPIResponses);
+    // load accommodations into entities
+    accommodationAPIResponses.forEach(
+            accommodation -> {
+              componentClient.forEventSourcedEntity(accommodation.id()).method(AccommodationBookingEntity::create);
+            });
+  }
+
+  private void storeFlights(String chatResponseFlights) {
+    String onlyFlights = extractJson(chatResponseFlights);
+    List<FlightAPIResponse> flightAPIResponses =
+            FlightAPIResponse.extract(new ByteArrayInputStream(onlyFlights.getBytes()));
+    log.info("storing flights: {}", flightAPIResponses);
+    // load flights into entities
+    flightAPIResponses.forEach(
+            flight -> {
+              componentClient.forEventSourcedEntity(flight.id()).method(FlightBookingEntity::create);
+            });
   }
 }

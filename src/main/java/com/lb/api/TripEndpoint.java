@@ -5,7 +5,7 @@ import akka.javasdk.annotations.http.HttpEndpoint;
 import akka.javasdk.annotations.http.Post;
 import akka.javasdk.client.ComponentClient;
 import com.lb.application.coordinator.TripCoordinator;
-import com.lb.application.models.FlightAgentChatModel;
+import com.lb.application.models.TripAgentChatModel;
 
 import java.util.concurrent.CompletionStage;
 
@@ -14,17 +14,17 @@ import java.util.concurrent.CompletionStage;
 public class TripEndpoint {
 
   private final ComponentClient componentClient;
-  private final FlightAgentChatModel flightAgentChatModel;
+  private final TripAgentChatModel tripAgentChatModel;
 
-  public TripEndpoint(ComponentClient componentClient, FlightAgentChatModel flightAgentChatModel) {
+  public TripEndpoint(ComponentClient componentClient, TripAgentChatModel tripAgentChatModel) {
     this.componentClient = componentClient;
-    this.flightAgentChatModel = flightAgentChatModel;
+    this.tripAgentChatModel = tripAgentChatModel;
   }
 
   // TODO make a GET with a string explaining the constraints
   @Post("/search/")
   public CompletionStage<String> searchTrip(Search search) {
-    return new TripCoordinator(flightAgentChatModel, componentClient)
+    return new TripCoordinator(tripAgentChatModel, componentClient)
         .requestTrip(
             search.id(),
             search.from(),
@@ -40,6 +40,6 @@ public class TripEndpoint {
   // TODO make a GET with a string explaining the constraints
   @Post("/book")
   public CompletionStage<String> book(Trip trip) {
-    return new TripCoordinator(flightAgentChatModel, componentClient).bookTrip(trip);
+    return new TripCoordinator(tripAgentChatModel, componentClient).bookTrip(trip);
   }
 }

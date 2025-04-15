@@ -1,4 +1,4 @@
-package com.lb.application;
+package com.lb.api;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,7 +11,7 @@ import java.io.InputStream;
 import java.time.ZonedDateTime;
 import java.util.List;
 
-public record BookingAccommodation(
+public record AccommodationAPIResponse(
     String id,
     String name,
     String neighborhood,
@@ -19,14 +19,14 @@ public record BookingAccommodation(
     ZonedDateTime checkout,
     int pricepernight) {
 
-  private static final Logger log = LoggerFactory.getLogger(BookingAccommodation.class);
+  private static final Logger log = LoggerFactory.getLogger(AccommodationAPIResponse.class);
 
-  public static List<BookingAccommodation> extract(InputStream json) {
+  public static List<AccommodationAPIResponse> extract(InputStream json) {
     ObjectMapper mapper = new ObjectMapper();
     mapper.registerModule(new JavaTimeModule());
 
     try {
-      return mapper.readValue(json, new TypeReference<List<BookingAccommodation>>() {});
+      return mapper.readValue(json, new TypeReference<List<AccommodationAPIResponse>>() {});
     } catch (IOException e) {
       log.error(e.getMessage());
       throw new RuntimeException(e);

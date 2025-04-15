@@ -5,7 +5,6 @@ import akka.javasdk.annotations.ComponentId;
 import akka.javasdk.eventsourcedentity.EventSourcedEntity;
 import com.lb.api.FlightAPIResponse;
 import com.lb.domain.Flight;
-import com.lb.domain.FlightConstraints;
 import com.lb.domain.FlightEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,11 +49,6 @@ public class FlightBookingEntity extends EventSourcedEntity<Flight, FlightEvent>
       log.warn("The flight {} is not `open` anymore. Can't be requested", currentState());
       return effects().reply(Done.done());
     }
-  }
-
-  // TODO remove dependency with workflow API
-  public Effect<List<Flight>> findFlights(FlightConstraints constraints) {
-    return null;
   }
 
   @Override

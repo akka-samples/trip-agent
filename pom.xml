@@ -13,11 +13,11 @@
   </parent>
 
   <groupId>com.lb</groupId>
-  <artifactId>kojak</artifactId>
+  <artifactId>trip-agency</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>kojak</name>
+  <name>trip-agency</name>
 
   <!-- Define properties for version management -->
   <properties>

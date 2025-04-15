@@ -1,7 +1,7 @@
 package com.lb.api;
 
 import akka.javasdk.client.ComponentClient;
-import com.lb.application.BookingAccommodation;
+
 import java.io.InputStream;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -16,7 +16,7 @@ public class AccommodationBookingAPITool {
   }
 
   @Tool
-  public List<BookingAccommodation> findAccommodation(
+  public List<AccommodationAPIResponse> findAccommodation(
       ZonedDateTime fromDate,
       ZonedDateTime toDate,
       String city,
@@ -26,6 +26,6 @@ public class AccommodationBookingAPITool {
         AccommodationBookingAPITool.class
             .getClassLoader()
             .getResourceAsStream("accommodations.json");
-    return BookingAccommodation.extract(in);
+    return AccommodationAPIResponse.extract(in);
   }
 }
