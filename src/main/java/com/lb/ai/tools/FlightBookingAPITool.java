@@ -1,4 +1,4 @@
-package com.lb.api;
+package com.lb.ai.tools;
 
 import java.io.InputStream;
 import java.util.List;

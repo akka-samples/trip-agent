@@ -1,4 +1,4 @@
-package com.lb.application.models;
+package com.lb.ai.models;
 
 import org.springframework.ai.anthropic.AnthropicChatModel;
 import org.springframework.ai.anthropic.AnthropicChatOptions;

@@ -1,6 +1,6 @@
 package com.lb.domain;
 
-import com.lb.api.FlightAPIResponse;
+import com.lb.ai.tools.FlightAPIResponse;
 
 // TODO use plain DateTime java
 public record Flight(FlightAPIResponse flightAPIResponse, Status status) {

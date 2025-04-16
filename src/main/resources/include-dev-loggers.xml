@@ -10,5 +10,5 @@
  -->
 <included>
     <logger name="com.lb" level="INFO"/>
-    <logger name="com.lb.application.coordinator.TripCoordinator" level="DEBUG"/>
+    <logger name="com.lb.application.TripCoordinator" level="DEBUG"/>
 </included>

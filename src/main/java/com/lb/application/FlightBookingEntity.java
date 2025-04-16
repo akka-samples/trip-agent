@@ -3,7 +3,7 @@ package com.lb.application;
 import akka.Done;
 import akka.javasdk.annotations.ComponentId;
 import akka.javasdk.eventsourcedentity.EventSourcedEntity;
-import com.lb.api.FlightAPIResponse;
+import com.lb.ai.tools.FlightAPIResponse;
 import com.lb.domain.Flight;
 import com.lb.domain.FlightEvent;
 import java.util.List;

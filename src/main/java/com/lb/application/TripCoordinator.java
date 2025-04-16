@@ -1,10 +1,9 @@
-package com.lb.application.coordinator;
+package com.lb.application;
 
 import akka.javasdk.client.ComponentClient;
+import com.lb.ai.tools.*;
 import com.lb.api.*;
-import com.lb.application.AccommodationBookingEntity;
-import com.lb.application.FlightBookingEntity;
-import com.lb.application.models.TripAgentChatModel;
+import com.lb.ai.models.TripAgentChatModel;
 import java.io.ByteArrayInputStream;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;

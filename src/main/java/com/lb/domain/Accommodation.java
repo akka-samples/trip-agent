@@ -1,6 +1,6 @@
 package com.lb.domain;
 
-import com.lb.api.AccommodationAPIResponse;
+import com.lb.ai.tools.AccommodationAPIResponse;
 
 // TODO use plain DateTime java
 public record Accommodation(AccommodationAPIResponse accommodationAPIResponse, Status status) {

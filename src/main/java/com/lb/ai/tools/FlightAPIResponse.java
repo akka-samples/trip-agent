@@ -1,4 +1,4 @@
-package com.lb.api;
+package com.lb.ai.tools;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

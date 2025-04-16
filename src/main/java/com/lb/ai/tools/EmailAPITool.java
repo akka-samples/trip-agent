@@ -1,4 +1,4 @@
-package com.lb.api;
+package com.lb.ai.tools;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.Session;
