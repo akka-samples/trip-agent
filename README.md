@@ -19,7 +19,7 @@ Note: Sending emails has only been tested when running in local.
 ## Call the service 
 
 ```shell
-curl http://localhost:9000/bookingTripRequest/search \
+curl http://localhost:9000/trip/search \
 -H "Content-Type: application/json" \
 -d '{"question": "find a bookingTripRequest from seoul to tokyo and back, from 2025-05-07 to 2025-05-14 The flight price not higher than 300 total and the total accomodation for the week not higher than 600. Send the suggestion to 'test.user@gmail.com'"
 }'

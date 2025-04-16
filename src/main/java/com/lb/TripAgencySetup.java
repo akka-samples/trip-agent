@@ -16,16 +16,17 @@ public class TripAgencySetup implements ServiceSetup {
   public DependencyProvider createDependencyProvider() {
     String anthropicApiKey = System.getenv("ANTHROPIC_API_KEY");
     if (anthropicApiKey == null) {
-      throw new RuntimeException("ANTHROPIC_API_KEY environment variable is not set");
+      throw new RuntimeException(
+          "ANTHROPIC_API_KEY environment variable is not set. See https://docs.anthropic.com/en/api/getting-started");
     }
     var anthropicApi = new AnthropicApi(System.getenv("ANTHROPIC_API_KEY"));
     // TODO use the new API https://docs.spring.io/spring-ai/reference/api/tools-migration.html
     var chatModelOptions =
         AnthropicChatOptions.builder()
-            .model("claude-3-7-sonnet-latest") // haiku wasn't 'clever' enough
-            .temperature(0.4)
-            .maxTokens(2000)
-            .toolCallbacks()
+            .model("claude-3-7-sonnet-latest")
+            // `Claude 3.5 Haiku` wasn't 'clever' enough. See https://www.anthropic.com/pricing#api
+            .temperature(0.4) // Higher temperatures lead to more creative and diverse outputs.
+            .maxTokens(3000) // To handle JSON output from the @tools ~ 9k-12k characters total.
             .build();
     final var tripAgentChatModel = new TripAgentChatModel(anthropicApi, chatModelOptions);
 

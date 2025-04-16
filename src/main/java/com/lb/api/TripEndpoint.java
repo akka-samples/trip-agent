@@ -22,8 +22,8 @@ public class TripEndpoint {
 
   @Post("/search/")
   public CompletionStage<String> searchTrip(Question question) {
-    return new TripCoordinator(tripAgentChatModel, componentClient)
-        .requestTrip(question.question());
+    TripCoordinator coordinator = new TripCoordinator(tripAgentChatModel, componentClient);
+    return coordinator.requestTrip(question.question());
   }
 
   @Post("/book")
