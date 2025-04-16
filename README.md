@@ -32,5 +32,6 @@ The result (in `localhost:8025`) should be something like:
 ![mail_bottom.png](mail_bottom.png)
 
 TODO if aim for expansion 
+- improve prompt https://docs.spring.io/spring-ai/reference/api/prompt.html
 - using workflow to reserve best value bookingTripRequest after query
 - using timers to check if the flights/accommodations are still up (using some random)

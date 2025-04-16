@@ -6,6 +6,7 @@ import akka.javasdk.annotations.http.Post;
 import akka.javasdk.client.ComponentClient;
 import com.lb.ai.models.TripAgentChatModel;
 import com.lb.application.TripCoordinator;
+
 import java.util.concurrent.CompletionStage;
 
 @Acl(allow = @Acl.Matcher(principal = Acl.Principal.INTERNET))
@@ -22,8 +23,8 @@ public class TripEndpoint {
 
   @Post("/search/")
   public CompletionStage<String> searchTrip(Question question) {
-    TripCoordinator coordinator = new TripCoordinator(tripAgentChatModel, componentClient);
-    return coordinator.requestTrip(question.question());
+      TripCoordinator coordinator = new TripCoordinator(tripAgentChatModel, componentClient);
+      return coordinator.requestTrip(question.question());
   }
 
   @Post("/book")

@@ -10,8 +10,6 @@ import org.springframework.ai.anthropic.api.AnthropicApi;
 @Setup
 public class TripAgencySetup implements ServiceSetup {
 
-  // TODO find out how can I insert plain POJOs/Beans not being @Service or @Component
-  //  more like @Autowired
   @Override
   public DependencyProvider createDependencyProvider() {
     String anthropicApiKey = System.getenv("ANTHROPIC_API_KEY");
@@ -20,7 +18,6 @@ public class TripAgencySetup implements ServiceSetup {
           "ANTHROPIC_API_KEY environment variable is not set. See https://docs.anthropic.com/en/api/getting-started");
     }
     var anthropicApi = new AnthropicApi(System.getenv("ANTHROPIC_API_KEY"));
-    // TODO use the new API https://docs.spring.io/spring-ai/reference/api/tools-migration.html
     var chatModelOptions =
         AnthropicChatOptions.builder()
             .model("claude-3-7-sonnet-latest")
