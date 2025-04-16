@@ -1,9 +1,9 @@
 package com.lb.application;
 
 import akka.javasdk.client.ComponentClient;
+import com.lb.ai.models.TripAgentChatModel;
 import com.lb.ai.tools.*;
 import com.lb.api.*;
-import com.lb.ai.models.TripAgentChatModel;
 import java.io.ByteArrayInputStream;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -71,9 +71,12 @@ public class TripCoordinator {
         chatClient
             .prompt(
                 String.format(
-                    "You are allowed to use the @tool function only once in this conversation. Do not use it more than once, even if more information becomes available"
-                        + "Send an email to the email provided in %s, using the requestId provided in %s and the content from %s and %s. The content has flights and accommodations, parse those to html before sending."
-                        + "Add in the email a recommendation with the best value combination flight (outbound and return) and accommodation",
+                    """
+                        You are allowed to use the @tool function only once in this conversation. Do not use it more than once, even if more information becomes available
+                        Send an email to the email provided in %s, using the requestId provided in %s and the content from %s and %s. The content has flights and accommodations
+                        Add in the email a recommendation with the best value combination flight (outbound and return) and accommodation
+                        parse the whole content as HTML before sending
+                        """,
                     question, question, responseFlights, responseAccommodations))
             .tools(new EmailAPITool())
             .call()
@@ -83,12 +86,12 @@ public class TripCoordinator {
         "We are processing your request. We'll send you the response to your email in a minute.");
   }
 
-  public CompletionStage<String> bookTrip(Trip trip) {
+  public CompletionStage<String> bookTrip(BookingTripRequest bookingTripRequest) {
     return componentClient
-        .forEventSourcedEntity(trip.flightRef())
+        .forEventSourcedEntity(bookingTripRequest.flightRef())
         .method(FlightBookingEntity::book)
         .invokeAsync()
-        .thenApply(__ -> String.format("Flight %s booked", trip.flightRef()));
+        .thenApply(__ -> String.format("Flight %s booked", bookingTripRequest.flightRef()));
   }
 
   public static String extractJson(String response) {

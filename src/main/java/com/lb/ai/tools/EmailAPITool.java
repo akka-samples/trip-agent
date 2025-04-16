@@ -29,9 +29,9 @@ public class EmailAPITool {
 
   @Tool(
       description =
-          "Sends an email. Use this tool only ONCE per conversation. By default: 'from' is 'trip.agency@gmail.com', 'subject' is the 'requestId' in scope.")
+          "Sends an email. By default: 'from' is 'trip.agency@gmail.com', 'subject' is the 'requestId' in scope.")
   public boolean sendEmail(String from, String to, String subject, String content) {
-    if( content == null || content.isEmpty()){
+    if (content == null || content.isEmpty()) {
       log.info("Email content is null or empty. Not sending email.");
       return false;
     }

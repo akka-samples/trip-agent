@@ -1,4 +1,4 @@
-# trip-agency
+# bookingTripRequest-agency
 
 This app represents an agency that searches for flights and accommodations via the
 prompt from the user through a HTTP call. 
@@ -19,9 +19,9 @@ Note: Sending emails has only been tested when running in local.
 ## Call the service 
 
 ```shell
-curl http://localhost:9000/trip/search \
+curl http://localhost:9000/bookingTripRequest/search \
 -H "Content-Type: application/json" \
--d '{"question": "find a trip from seoul to tokyo and back, from 2025-05-07 to 2025-05-14 The flight price not higher than 300 total and the total accomodation for the week not higher than 600. Send the suggestion to 'test.user@gmail.com'"
+-d '{"question": "find a bookingTripRequest from seoul to tokyo and back, from 2025-05-07 to 2025-05-14 The flight price not higher than 300 total and the total accomodation for the week not higher than 600. Send the suggestion to 'test.user@gmail.com'"
 }'
 ```
 
@@ -32,5 +32,5 @@ The result (in `localhost:8025`) should be something like:
 ![mail_bottom.png](mail_bottom.png)
 
 TODO if aim for expansion 
-- using workflow to reserve best value trip after query
+- using workflow to reserve best value bookingTripRequest after query
 - using timers to check if the flights/accommodations are still up (using some random)

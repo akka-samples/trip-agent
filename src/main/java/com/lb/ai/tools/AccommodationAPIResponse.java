@@ -1,8 +1,7 @@
 package com.lb.ai.tools;
 
+import akka.javasdk.JsonSupport;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.io.IOException;
 import java.io.InputStream;
 import java.time.ZonedDateTime;
@@ -21,11 +20,10 @@ public record AccommodationAPIResponse(
   private static final Logger log = LoggerFactory.getLogger(AccommodationAPIResponse.class);
 
   public static List<AccommodationAPIResponse> extract(InputStream json) {
-    ObjectMapper mapper = new ObjectMapper();
-    mapper.registerModule(new JavaTimeModule());
 
     try {
-      return mapper.readValue(json, new TypeReference<List<AccommodationAPIResponse>>() {});
+      return JsonSupport.getObjectMapper()
+          .readValue(json, new TypeReference<List<AccommodationAPIResponse>>() {});
     } catch (IOException e) {
       log.error(e.getMessage());
       throw new RuntimeException(e);
