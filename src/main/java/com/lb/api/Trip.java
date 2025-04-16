@@ -1,5 +1,3 @@
 package com.lb.api;
 
-public record Trip(String flightRef, String accommodationRef) {
-
-}
+public record Trip(String flightRef, String accommodationRef) {}

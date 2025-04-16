@@ -1,49 +1,34 @@
 # trip-agency
 
+This app represents an agency that searches for flights and accommodations via the
+prompt from the user through a HTTP call. 
+
+It's composed by an LLM (Anthropic) and tools to find flights, accommodations and sending mails. 
+
+Once a search is requested the app will look for the flights, accommodations, 
+and will email the requester with some options and the best value offer. 
+
+## Constraints
+
+ATM this app can only run in local for the email constraints. Since it depends in 
+
 ## Prerequisites
 
-Start a local email service
+Start a local email service. 
 ```shell
 docker run -d -p 1025:1025 -p 8025:8025 mailhog/mailhog
 ```
 
 
-Try caching data if using Gatling
-
-Fix the flights and accommodation so the range of the question will be always 7/May/2025 to 14/May/2025
-Plan for three questions: 
-I'm in seoul and I want to spend a from 10 to 17 in Tokyo
-  answers you have flight x 10 and y 17 and accommodation z from 10 to 17
-I'm in seoul and I want to spend a from 11 to 17 in Tokyo
-  answers you have flight x 10 and y 17 and accommodation z from 10 to 17
-   or
-  answers you have flight x 12 and y 17 and accommodation z2 from 12 to 17
-
-After the flight to 10 to 17 was picked with accommodation another user could be also getting
-the same offer but tries later and the entities are already sold. So it gets denied. 
-
-
-Request if you didn't the email to send with an id to the workflow to continue. 
-
-Use the coordinator to check for flights, check for the accommodations and if nothings matches show the closest look for something closer.
-Then send the info to a queue and provide the link for a workflow that when accepted will book the flight. 
- 
-
-
-
-using ESE to refer to flights and accomodations
-TODO if aim for expansion 
-- using timers to check if the flights are still up (using some random )
-
+## Call the service 
 
 ```shell
-curl  http://localhost:9000/trip/search \
+curl http://localhost:9000/trip/search \
 -H "Content-Type: application/json" \
--d '{
-"id": "abc123",
-"locationFrom": "Seoul",
-"locationTo": "Tokyo",
-"from": "2025-05-07T09:00:00Z",
-"to": "2025-05-14T18:00:00Z", "flightMaxPrice": 150, "neighborhood": "any", "accMaxPrice": 600, "email": "test.user@gmail.com"
-}' -i
+-d '{"content": "find a trip from seoul to tokyo and back, from 2025-05-07 to 2025-05-14 The flight price not higher than 300 total and the total accomodation for the week not higher than 600. Send the suggestion to 'test.user@gmail.com'"
+}'
 ```
+
+TODO if aim for expansion 
+- using workflow to reserve best value trip after query
+- using timers to check if the flights/accommodations are still up (using some random)

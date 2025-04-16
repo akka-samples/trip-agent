@@ -6,7 +6,6 @@ import akka.javasdk.annotations.http.Post;
 import akka.javasdk.client.ComponentClient;
 import com.lb.application.coordinator.TripCoordinator;
 import com.lb.application.models.TripAgentChatModel;
-
 import java.util.concurrent.CompletionStage;
 
 @Acl(allow = @Acl.Matcher(principal = Acl.Principal.INTERNET))
@@ -24,8 +23,7 @@ public class TripEndpoint {
   // TODO make a GET with a string explaining the constraints
   @Post("/search/")
   public CompletionStage<String> searchTrip(Question question) {
-    return new TripCoordinator(tripAgentChatModel, componentClient)
-        .requestTrip(question.content());
+    return new TripCoordinator(tripAgentChatModel, componentClient).requestTrip(question.content());
   }
 
   // TODO make a GET with a string explaining the constraints

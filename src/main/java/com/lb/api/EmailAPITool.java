@@ -5,12 +5,11 @@ import jakarta.mail.Session;
 import jakarta.mail.Transport;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.tool.annotation.Tool;
-
-import java.util.Properties;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class EmailAPITool {
 
@@ -32,32 +31,30 @@ public class EmailAPITool {
       description =
           "Sends an email. Use this tool only ONCE per conversation. By default: 'from' is 'trip.agency@gmail.com', 'subject' is the 'requestId' in scope.")
   public boolean sendEmail(String from, String to, String subject, String content) {
+    if( content == null || content.isEmpty()){
+      log.info("Email content is null or empty. Not sending email.");
+      return false;
+    }
     try {
-      if(!sentEmail.get()){ //Avoiding spam in case LLM tries to use it more than once (which is common ATM)
+      if (!sentEmail
+          .get()) { // Avoiding spam in case LLM tries to use it more than once (which is common
+        // ATM)
         Session session = Session.getInstance(props);
         MimeMessage message = new MimeMessage(session);
         message.setFrom(new InternetAddress(from));
         message.setRecipients(MimeMessage.RecipientType.TO, InternetAddress.parse(to));
         message.setSubject(subject);
-        message.setContent(content + createLink(), "text/html;charset=utf-8");
+        message.setContent(content, "text/html;charset=utf-8");
         Transport.send(message);
-        sentEmail.compareAndSet(false, true);
         log.info("Email sent");
+        return sentEmail.compareAndSet(false, true);
       } else {
         log.info("Email already sent");
+        return false;
       }
     } catch (MessagingException e) {
       log.error(e.getMessage());
       throw new RuntimeException(e);
     }
-    return false;
-  }
-
-  public String createLink(){
-    return """
-
-             (bear with me, the following option should be just a link but for simplicity we use curl)
-             If you want to book any of these options click here: `curl http://localhost:9000/trip/book -H "Content-Type: application/json" \\
-            -d '{ "flightRef": "[your-ref-here]" }'`""";
   }
 }

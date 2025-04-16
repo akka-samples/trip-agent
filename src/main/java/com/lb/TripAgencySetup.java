@@ -15,14 +15,14 @@ public class TripAgencySetup implements ServiceSetup {
   @Override
   public DependencyProvider createDependencyProvider() {
     String anthropicApiKey = System.getenv("ANTHROPIC_API_KEY");
-    if(anthropicApiKey == null) {
+    if (anthropicApiKey == null) {
       throw new RuntimeException("ANTHROPIC_API_KEY environment variable is not set");
     }
     var anthropicApi = new AnthropicApi(System.getenv("ANTHROPIC_API_KEY"));
     // TODO use the new API https://docs.spring.io/spring-ai/reference/api/tools-migration.html
     var chatModelOptions =
         AnthropicChatOptions.builder()
-            .model("claude-3-7-sonnet-latest")//haiku wasn't 'clever' enough
+            .model("claude-3-7-sonnet-latest") // haiku wasn't 'clever' enough
             .temperature(0.4)
             .maxTokens(2000)
             .toolCallbacks()

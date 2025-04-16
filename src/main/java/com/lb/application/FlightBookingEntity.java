@@ -6,10 +6,9 @@ import akka.javasdk.eventsourcedentity.EventSourcedEntity;
 import com.lb.api.FlightAPIResponse;
 import com.lb.domain.Flight;
 import com.lb.domain.FlightEvent;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 @ComponentId("flight-booking-specialist")
 public class FlightBookingEntity extends EventSourcedEntity<Flight, FlightEvent> {
@@ -35,10 +34,11 @@ public class FlightBookingEntity extends EventSourcedEntity<Flight, FlightEvent>
   }
 
   /**
-   * For simplicity,
-   * 1. we assume the imaginary API to book the flight always works and reserves immediately the flight.
-   *    Although it might be interesting to deal with a previous state (requested) to show how to handle some of the complexity of the domain.
-   * 2. we ignore the fact that some credential need to be used to pay the booking.
+   * For simplicity, 1. we assume the imaginary API to book the flight always works and reserves
+   * immediately the flight. Although it might be interesting to deal with a previous state
+   * (requested) to show how to handle some of the complexity of the domain. 2. we ignore the fact
+   * that some credential need to be used to pay the booking.
+   *
    * @return Done
    */
   public Effect<Done> book() {
