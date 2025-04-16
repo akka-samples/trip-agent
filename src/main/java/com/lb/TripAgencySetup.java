@@ -4,8 +4,6 @@ import akka.javasdk.DependencyProvider;
 import akka.javasdk.ServiceSetup;
 import akka.javasdk.annotations.Setup;
 import com.lb.application.models.TripAgentChatModel;
-import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 import org.springframework.ai.anthropic.AnthropicChatOptions;
 import org.springframework.ai.anthropic.api.AnthropicApi;
 

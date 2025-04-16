@@ -37,16 +37,7 @@ public class TripCoordinator {
 
   // Create queries to see top destinations
   // TODO use plain language
-  public CompletionStage<String> requestTrip(
-      String requestId,
-      ZonedDateTime fromDate,
-      ZonedDateTime toDate,
-      String fromWhere,
-      String toWhere,
-      int maxPriceFlight,
-      String neighborhood,
-      int totalPriceAccommodation,
-      String email) {
+  public CompletionStage<String> requestTrip(String question) {
     // TODO use virtual threads
     // TODO Check out why when using CompletableFuture Jackson gets hijacked and parsing fails.
     log.info("looking for flights");
@@ -55,39 +46,47 @@ public class TripCoordinator {
         chatClient
             .prompt(
                 String.format(
-                    "find flights with the following constraints and parse it as a json: fromDate %s, toDate %s, from %s , to %s, maxPrice < %d",
-                    fromDate, toDate, fromWhere, toWhere, maxPriceFlight))
+                    "find ONLY flights with the following constraints %s. Ignore any constraints that don't refer flights" +
+                            "Parse the flights as a JSON such they fit a schema parseable to a Java class like this: " +
+                            "FlightAPIResponse(String id, String from, String to, ZonedDateTime departure, ZonedDateTime arrival, int price)" +
+                            "Create the JSON such it has only a list of FlightAPIResponse, do not add any other field"
+                        , question))
             .tools(new FlightBookingAPITool())
             .call()
             .content();
 
     storeFlights(responseFlights);
+    log.info("looking for accommodations ");
 
     // request accomodations
     String responseAccommodations =
         chatClient
             .prompt(
                 String.format(
-                    "find accommodations with the following constraints and parse it as a json: fromDate %s, toDate %s, city %s , neighborhood %s, total price for the stay < %d",
-                    fromDate, toDate, toWhere, neighborhood, totalPriceAccommodation))
-            .tools(new AccommodationBookingAPITool(componentClient))
+                    "find ONLY accommodations with the following constraints %s. Ignore any constraints that don't refer accommodations" +
+                            "Parse the accommodations as a JSON such they fit a schema parseable to a Java class like this:  " +
+                            "AccommodationAPIResponse( String id, String name, String neighborhood, ZonedDateTime checkin, ZonedDateTime checkout, int pricepernight)" +
+                            "Create the JSON such it has only a list of AccommodationAPIResponse, do not add any other field"
+                        , question))
+            .tools(new AccommodationBookingAPITool())
             .call()
             .content();
 
     storeAccommodations(responseAccommodations);
-
+    log.info("sending mail");
     String responseMail =
         chatClient
             .prompt(
                 String.format(
-                    "Send only once an email to %s, using the requestId %s and the content from %s and %s",
-                    email, requestId, responseFlights, responseAccommodations))
+                    "You are allowed to use the @tool function only once in this conversation. Do not use it more than once, even if more information becomes available" +
+                            "Send an email to the email provided in %s, using the requestId provided in %s and the content from %s and %s. The content has flights and accommodations, parse those to html before sending." +
+                            "Add in the email a recommendation with the best value combination flight (outbound and return) and accommodation",
+                    question, question, responseFlights, responseAccommodations))
             .tools(new EmailAPITool())
             .call()
             .content();
-    log.info(String.format("responseMail %s", responseMail));
-
-    // if get options for both
+    log.debug(String.format("responseMail %s", responseMail));
+    //TODO? hold the best trip with a workflow and send a link for its booking. If the reservation is not made in 2 mins the trip is freed.
     return CompletableFuture.completedFuture(
         "We are processing your request. We'll send you the response to your email in a minute.");
   }
@@ -111,10 +110,11 @@ public class TripCoordinator {
   }
 
   private void storeAccommodations(String chatResponseAccomodations) {
+    log.debug("parsing accommodations: {}", chatResponseAccomodations);
     String onlyAccommodations = extractJson(chatResponseAccomodations);
     List<AccommodationAPIResponse> accommodationAPIResponses =
             AccommodationAPIResponse.extract(new ByteArrayInputStream(onlyAccommodations.getBytes()));
-    log.info("storing accommodations: {}", accommodationAPIResponses);
+    log.debug("storing accommodations: {}", accommodationAPIResponses);
     // load accommodations into entities
     accommodationAPIResponses.forEach(
             accommodation -> {
@@ -123,10 +123,11 @@ public class TripCoordinator {
   }
 
   private void storeFlights(String chatResponseFlights) {
+    log.debug("parsing flights: {}", chatResponseFlights);
     String onlyFlights = extractJson(chatResponseFlights);
     List<FlightAPIResponse> flightAPIResponses =
             FlightAPIResponse.extract(new ByteArrayInputStream(onlyFlights.getBytes()));
-    log.info("storing flights: {}", flightAPIResponses);
+    log.debug("storing flights: {}", flightAPIResponses);
     // load flights into entities
     flightAPIResponses.forEach(
             flight -> {

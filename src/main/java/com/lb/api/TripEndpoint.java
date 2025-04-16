@@ -23,18 +23,9 @@ public class TripEndpoint {
 
   // TODO make a GET with a string explaining the constraints
   @Post("/search/")
-  public CompletionStage<String> searchTrip(Search search) {
+  public CompletionStage<String> searchTrip(Question question) {
     return new TripCoordinator(tripAgentChatModel, componentClient)
-        .requestTrip(
-            search.id(),
-            search.from(),
-            search.to(),
-            search.locationFrom(),
-            search.locationTo(),
-            search.flightMaxPrice(),
-            search.neighborhood(),
-            search.accMaxPrice(),
-            search.email());
+        .requestTrip(question.content());
   }
 
   // TODO make a GET with a string explaining the constraints

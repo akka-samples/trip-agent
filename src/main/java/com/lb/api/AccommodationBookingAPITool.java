@@ -9,20 +9,14 @@ import org.springframework.ai.tool.annotation.Tool;
 
 public class AccommodationBookingAPITool {
 
-  private final ComponentClient componentClient;
 
-  public AccommodationBookingAPITool(ComponentClient componentClient) {
-    this.componentClient = componentClient;
+  public AccommodationBookingAPITool() {
   }
 
   @Tool
-  public List<AccommodationAPIResponse> findAccommodation(
-      ZonedDateTime fromDate,
-      ZonedDateTime toDate,
-      String city,
-      String neighborhood,
-      int maxTotalPrice) {
-    InputStream in =
+  public List<AccommodationAPIResponse> findAccommodations(){
+  //If the accommodations results weren't fake we should add params
+  InputStream in =
         AccommodationBookingAPITool.class
             .getClassLoader()
             .getResourceAsStream("accommodations.json");
