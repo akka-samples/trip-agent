@@ -45,4 +45,10 @@ public class TripEndpoint {
     //WIP
     return new TripCoordinator(tripAgentChatModel, componentClient).bookTrip(bookingTripRequest);
   }
+  public record BookingTripRequest(String flightRef, String accommodationRef) {}
+  public record Question(String question) {}
+
+
 }
+
+

@@ -10,13 +10,16 @@ import org.springframework.ai.anthropic.api.AnthropicApi;
 @Setup
 public class TripAgencySetup implements ServiceSetup {
 
-  @Override
-  public DependencyProvider createDependencyProvider() {
+  public TripAgencySetup() {
     String anthropicApiKey = System.getenv("ANTHROPIC_API_KEY");
     if (anthropicApiKey == null) {
       throw new RuntimeException(
-          "ANTHROPIC_API_KEY environment variable is not set. See https://docs.anthropic.com/en/api/getting-started");
+              "ANTHROPIC_API_KEY environment variable is not set. See https://docs.anthropic.com/en/api/getting-started");
     }
+  }
+
+  @Override
+  public DependencyProvider createDependencyProvider() {
     var anthropicApi = new AnthropicApi(System.getenv("ANTHROPIC_API_KEY"));
     var chatModelOptions =
         AnthropicChatOptions.builder()

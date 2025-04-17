@@ -3,7 +3,7 @@
 This app represents an agency that searches for flights and accommodations via the
 prompt from the user through a HTTP call. 
 
-It's composed by an LLM (Anthropic) and tools to find flights, accommodations and sending mails. 
+It's composed by a LLM (Anthropic) and tools to find flights, accommodations and sending mails. 
 
 Once a search is requested the app will look for the flights, accommodations, 
 and will email the requester with some options and the best value offer. 
