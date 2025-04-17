@@ -14,7 +14,7 @@ public class TripAgencySetup implements ServiceSetup {
     String anthropicApiKey = System.getenv("ANTHROPIC_API_KEY");
     if (anthropicApiKey == null) {
       throw new RuntimeException(
-              "ANTHROPIC_API_KEY environment variable is not set. See https://docs.anthropic.com/en/api/getting-started");
+          "ANTHROPIC_API_KEY environment variable is not set. See https://docs.anthropic.com/en/api/getting-started");
     }
   }
 

@@ -79,8 +79,7 @@ public class TripCoordinator {
             .call()
             .content();
     log.debug(String.format("responseMail %s", responseMail));
-    return
-        "We are processing your request. We'll send you the response to your email in a minute.";
+    return "We are processing your request. We'll send you the response to your email in a minute.";
   }
 
   public CompletionStage<String> bookTrip(TripEndpoint.BookingTripRequest bookingTripRequest) {
@@ -114,7 +113,7 @@ public class TripCoordinator {
           componentClient
               .forEventSourcedEntity(accommodation.id())
               .method(AccommodationBookingEntity::create)
-                  .invokeAsync(accommodation);
+              .invokeAsync(accommodation);
         });
   }
 
@@ -128,9 +127,9 @@ public class TripCoordinator {
     flightAPIResponses.forEach(
         flight -> {
           componentClient
-                  .forEventSourcedEntity(flight.id())
-                  .method(FlightBookingEntity::create)
-                  .invokeAsync(flight);
+              .forEventSourcedEntity(flight.id())
+              .method(FlightBookingEntity::create)
+              .invokeAsync(flight);
         });
   }
 }
