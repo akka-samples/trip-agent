@@ -6,7 +6,6 @@ import com.lb.ai.tools.*;
 import com.lb.api.*;
 import java.io.ByteArrayInputStream;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,12 +25,10 @@ public class TripCoordinator {
     this.chatClient = ChatClient.create(tripAgentChatModel);
   }
 
-  public CompletionStage<String> requestTrip(String question) {
-    // TODO use virtual threads
-    // TODO Check out why when using CompletableFuture Jackson gets hijacked and parsing fails.
-    // TODO search for already existing flights before using the "external" API.
+  public String requestTrip(String question) {
+    // TODO? use virtual threads
+    // TODO? search for already existing flights before using the "external" API.
     log.info("looking for flights");
-
     String responseFlights =
         chatClient
             .prompt(
@@ -43,7 +40,7 @@ public class TripCoordinator {
                        Create the JSON such it has only a list of FlightAPIResponse, do not add any other field
                        """,
                     question))
-            .tools(new FlightBookingAPITool())
+            .tools(FlightBookingAPITool.getMethodToolCallback("findFlights"))
             .call()
             .content();
 
@@ -61,7 +58,7 @@ public class TripCoordinator {
                         Create the JSON such it has only a list of AccommodationAPIResponse, do not add any other field
                         """,
                     question))
-            .tools(new AccommodationBookingAPITool())
+            .tools(AccommodationBookingAPITool.getMethodToolCallback("findAccommodations"))
             .call()
             .content();
 
@@ -82,8 +79,8 @@ public class TripCoordinator {
             .call()
             .content();
     log.debug(String.format("responseMail %s", responseMail));
-    return CompletableFuture.completedFuture(
-        "We are processing your request. We'll send you the response to your email in a minute.");
+    return
+        "We are processing your request. We'll send you the response to your email in a minute.";
   }
 
   public CompletionStage<String> bookTrip(BookingTripRequest bookingTripRequest) {
