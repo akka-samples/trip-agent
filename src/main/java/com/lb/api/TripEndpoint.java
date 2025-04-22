@@ -25,23 +25,24 @@ public class TripEndpoint {
   // check there's a email in content otherwise return the failures.
   @Post("/search/")
   public String searchTrip(Question question) {
-    try {
       componentClient
           .forWorkflow(String.valueOf(question.hashCode()))
           .method(TripAgentWorkflow::startSearch)
           .invoke(question.question);
-    } catch (Exception e) {
-      log.error("Error processing request {}.", question.question().hashCode(), e);
-    }
     return "Request received. We'll sent an email shortly.";
   }
 
   @Post("/book")
   public CompletionStage<String> book(BookingTripRequest bookingTripRequest) {
     // WIP
-    return new TripCoordinator(componentClient).bookTrip(bookingTripRequest);
+    return null;
   }
 
+  /**
+   *
+   * @param flightRef
+   * @param accommodationRef
+   */
   public record BookingTripRequest(String flightRef, String accommodationRef) {}
 
   public record Question(String question) {}

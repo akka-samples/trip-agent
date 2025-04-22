@@ -21,16 +21,14 @@ public class AccommodationBookingEntity
     return Accommodation.empty();
   }
 
-  public Effect<Done> create(AccommodationAPIResponse accommodationAPIResponse) {
+  public Effect<Done> create(Accommodation accommodation) {
     if (currentState().status().equals(Accommodation.Status.UNINITIALIZED)) {
-      log.info("Loading accommodation {} into the system.", accommodationAPIResponse);
-      Accommodation accommodation =
-              AccommodationMapper.mapAccommodation(accommodationAPIResponse).withStatus(Accommodation.Status.AVAILABLE);
+      log.info("Loading accommodation {} into the system.", accommodation);
       return effects()
           .persist(new AccommodationEvent.AccommodationFound(accommodation))
           .thenReply(__ -> Done.done());
     } else {
-      log.warn("The accommodation {} is exists already.", accommodationAPIResponse);
+      log.warn("The accommodation {} is exists already.", accommodation);
       return effects().reply(Done.done());
     }
   }

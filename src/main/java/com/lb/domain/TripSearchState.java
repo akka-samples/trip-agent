@@ -3,14 +3,18 @@ package com.lb.domain;
 import java.util.List;
 import java.util.stream.Stream;
 
-public record TripSearchState(Trip trip, RequestStatus requestState) {
+public record TripSearchState(String userRequest, Trip trip, RequestStatus requestState) {
 
   public TripSearchState withFlights(List<Flight> flights) {
-    return new TripSearchState(new Trip(flights, this.trip.accommodations), this.requestState);
+    return new TripSearchState(userRequest, new Trip(flights, this.trip.accommodations), this.requestState);
   }
 
   public TripSearchState withAccommodations(List<Accommodation> accommodations) {
-    return new TripSearchState(new Trip(this.trip.flights, accommodations), this.requestState);
+    return new TripSearchState(userRequest, new Trip(this.trip.flights, accommodations), this.requestState);
+  }
+
+  public TripSearchState withRequestStatus(RequestStatus requestStatus) {
+    return new TripSearchState(userRequest, this.trip, requestStatus);
   }
 
   public TripSearchState withFlights(Stream<Flight> flights) {

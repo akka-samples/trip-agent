@@ -1,5 +1,6 @@
 package com.lb.application;
 
+import akka.Done;
 import akka.javasdk.annotations.ComponentId;
 import akka.javasdk.client.ComponentClient;
 import akka.javasdk.workflow.Workflow;
@@ -48,7 +49,7 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
                   storeFlights(domainFlights);
                   return effects()
                       .updateState(currentState().withFlights(domainFlights))
-                      .transitionTo("search-accomodations");
+                      .transitionTo("search-accommodations", currentState().userRequest());
                 })
             .timeout(Duration.ofSeconds(60));
     // Step 2 look for accommodations (maybe this and the above using async)
@@ -61,6 +62,7 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
                 accommodations -> {
                   List<Accommodation> domainAccommodations =
                       AccommodationMapper.mapAccommodations(accommodations.accommodations);
+                  storeAccommodations(domainAccommodations);
                   return effects()
                       .updateState(currentState().withAccommodations(domainAccommodations))
                       .transitionTo("send-mail");
@@ -74,7 +76,7 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
                 String.class,
                 request -> {
                   return sendMail(
-                      request,
+                          currentState().userRequest(),
                       currentState().trip().flights(),
                       currentState().trip().accommodations());
                 })
@@ -85,24 +87,37 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
                 })
             .timeout(Duration.ofSeconds(90));
 
+    Step errorHandler =
+            step("error-handler")
+                    .call(() -> {
+                      log.error("Trip request failed. Final state {}", currentState());
+                      return Done.done();
+                    }).andThen(Done.class, __ ->
+                            effects()
+                                    .updateState(currentState().withRequestStatus(TripSearchState.RequestStatus.FAILED))
+                                    .end());
+
     // Step 3 deal with errors
-    return workflow().addStep(searchFlights).addStep(searchAccommodations).addStep(sendMail);
+    return workflow()
+            .addStep(searchFlights)
+            .addStep(searchAccommodations)
+            .addStep(sendMail)
+            .failoverTo("error-handler", maxRetries(0));
   }
 
-  public Effect<String> startSearch(String request) {
+  public Effect<String> startSearch(String userRequest) {
     // TODO return error directly if not email is provided.
-    // TODO? I can add the question as the state of the workflow
     TripSearchState initialState =
-        new TripSearchState(TripSearchState.Trip.empty(), TripSearchState.RequestStatus.RECEIVED);
+        new TripSearchState(userRequest, TripSearchState.Trip.empty(), TripSearchState.RequestStatus.RECEIVED);
     return effects()
         .updateState(initialState)
-        .transitionTo("search-flights", request)
+        .transitionTo("search-flights", userRequest)
         .thenReply(
-            "\"We are processing your request. We'll send you the response to your email in a minute.");
+            "\"We are processing your userRequest. We'll send you the response to your email in a minute.");
   }
 
   // TODO move to ai?
-  public FlightAPIResponseList findFlights(String question) {
+  public FlightAPIResponseList findFlights(String userRequest) {
     log.info("looking for flights");
     String chatResponseFlights =
         chatClient
@@ -114,18 +129,18 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
                        FlightAPIResponse(String id, String from, String to, ZonedDateTime departure, ZonedDateTime arrival, int price)
                        Create the JSON such it has only a list of FlightAPIResponse, do not add any other field
                        """,
-                    question))
+                    userRequest))
             .tools(FlightBookingAPITool.getMethodToolCallback("findFlights"))
                 .call()
             .content();
     log.debug("parsing flights: {}", chatResponseFlights);
     String onlyFlights = extractJson(chatResponseFlights);
-    return new FlightAPIResponseList(
-        FlightAPIResponse.extract(new ByteArrayInputStream(onlyFlights.getBytes())));
+    InputStream flightStream = new ByteArrayInputStream(onlyFlights.getBytes());
+    List<FlightAPIResponse> flightAPIResponses = FlightAPIResponse.extract(flightStream);
+    return new FlightAPIResponseList(flightAPIResponses);
   }
 
   private void storeFlights(List<Flight> chatResponseFlights) {
-
     // load flights into entities
     chatResponseFlights.forEach(
         flight -> {
@@ -135,8 +150,19 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
               .invokeAsync(flight);
         });
   }
+  private void storeAccommodations(List<Accommodation> chatResponseAccommodations) {
+    // load accommodations into entities
+    chatResponseAccommodations.forEach(
+            accommodation -> {
+              componentClient
+                      .forEventSourcedEntity(accommodation.id())
+                      .method(AccommodationBookingEntity::create)
+                      .invokeAsync(accommodation);
+            });
+  }
 
   private AccommodationAPIResponseList findAccommodations(String question) {
+    log.info("looking for accommodations");
     String responseAccommodations =
         chatClient
             .prompt(
@@ -151,6 +177,7 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
             .tools(AccommodationBookingAPITool.getMethodToolCallback("findAccommodations"))
             .call()
             .content();
+    log.debug("parsing accommodations: {}", responseAccommodations);
     String accommodationsJson = extractJson(responseAccommodations);
     InputStream accommodationStream = new ByteArrayInputStream(accommodationsJson.getBytes());
     List<AccommodationAPIResponse> accommodationAPIResponses =
