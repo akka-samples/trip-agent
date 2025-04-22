@@ -33,7 +33,6 @@ public class TripAgencySetup implements ServiceSetup {
     return new DependencyProvider() {
       @Override
       public <T> T getDependency(Class<T> aClass) {
-
         if (aClass == TripAgentChatModel.class) {
           return aClass.cast(tripAgentChatModel);
         } else {

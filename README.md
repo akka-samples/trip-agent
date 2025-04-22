@@ -34,4 +34,9 @@ The result (in `localhost:8025`) should be something like:
 TODO if aim for expansion 
 - improve prompt https://docs.spring.io/spring-ai/reference/api/prompt.html
 - using workflow to reserve best value bookingTripRequest after query
-- using timers to check if the flights/accommodations are still up (using some random)
+- using timers to check if the flights/accommodations are still available in the market (if fake is refactored to use a real/external endpoint)
+
+Afterthoughts:
+- How can we do integration tests without consuming LLM credit?
+- Tools might need state to keep away the LLM from misusing them. For example, using them more often than expected. 
+  - In this regard, ESE might be well suited to not only keep the previous conversations but the usage of tools. 

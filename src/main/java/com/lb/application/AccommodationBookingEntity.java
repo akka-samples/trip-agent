@@ -16,18 +16,16 @@ public class AccommodationBookingEntity
 
   private static final Logger log = LoggerFactory.getLogger(AccommodationBookingEntity.class);
 
-  public AccommodationBookingEntity(List<Accommodation> accommodationsAvailable) {}
-
   @Override
   public Accommodation emptyState() {
-    return new Accommodation(null, Accommodation.Status.UNINITIALIZED);
+    return Accommodation.empty();
   }
 
   public Effect<Done> create(AccommodationAPIResponse accommodationAPIResponse) {
     if (currentState().status().equals(Accommodation.Status.UNINITIALIZED)) {
       log.info("Loading accommodation {} into the system.", accommodationAPIResponse);
       Accommodation accommodation =
-          new Accommodation(accommodationAPIResponse, Accommodation.Status.AVAILABLE);
+              AccommodationMapper.mapAccommodation(accommodationAPIResponse).withStatus(Accommodation.Status.AVAILABLE);
       return effects()
           .persist(new AccommodationEvent.AccommodationFound(accommodation))
           .thenReply(__ -> Done.done());
@@ -63,7 +61,7 @@ public class AccommodationBookingEntity
     return switch (bookingAccommodationEvent) {
       case AccommodationEvent.AccommodationFound ff -> ff.accommodation();
       case AccommodationEvent.AccommodationSold ignored ->
-          new Accommodation(currentState().accommodationAPIResponse(), Accommodation.Status.BOOKED);
+          currentState().withStatus(Accommodation.Status.BOOKED);
     };
   }
 }

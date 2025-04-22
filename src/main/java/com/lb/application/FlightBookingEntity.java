@@ -3,7 +3,6 @@ package com.lb.application;
 import akka.Done;
 import akka.javasdk.annotations.ComponentId;
 import akka.javasdk.eventsourcedentity.EventSourcedEntity;
-import com.lb.ai.tools.FlightAPIResponse;
 import com.lb.domain.Flight;
 import com.lb.domain.FlightEvent;
 import java.util.List;
@@ -15,20 +14,17 @@ public class FlightBookingEntity extends EventSourcedEntity<Flight, FlightEvent>
 
   private static final Logger log = LoggerFactory.getLogger(FlightBookingEntity.class);
 
-  public FlightBookingEntity(List<Flight> flightsAvailable) {}
-
   @Override
   public Flight emptyState() {
-    return new Flight(null, Flight.Status.UNINITIALIZED);
+    return Flight.empty();
   }
 
-  public Effect<Done> create(FlightAPIResponse flightAPIResponse) {
+  public Effect<Done> create(Flight flight) {
     if (currentState().status().equals(Flight.Status.UNINITIALIZED)) {
-      log.info("Loading flight {} into the system.", flightAPIResponse);
-      Flight flight = new Flight(flightAPIResponse, Flight.Status.OPEN);
+      log.info("Loading flight {} into the system.", flight);
       return effects().persist(new FlightEvent.FlightFound(flight)).thenReply(__ -> Done.done());
     } else {
-      log.warn("The flight {} is exists already.", flightAPIResponse);
+      log.warn("The flight {} is exists already.", flight);
       return effects().reply(Done.done());
     }
   }
@@ -55,8 +51,7 @@ public class FlightBookingEntity extends EventSourcedEntity<Flight, FlightEvent>
   public Flight applyEvent(FlightEvent bookingFlightEvent) {
     return switch (bookingFlightEvent) {
       case FlightEvent.FlightFound ff -> ff.flight();
-      case FlightEvent.FlightSold ignored ->
-          new Flight(currentState().flightAPIResponse(), Flight.Status.BOOKED);
+      case FlightEvent.FlightSold ignored -> currentState().withStatus(Flight.Status.BOOKED);
     };
   }
 }

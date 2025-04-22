@@ -11,5 +11,8 @@
 <included>
     <logger name="com.lb" level="INFO"/>
     <logger name="com.lb.application.TripCoordinator" level="DEBUG"/>
+    <logger name="com.lb.application.TripAgentWorkflow" level="DEBUG"/>
+    <logger name="akka.javasdk.workflow" level="DEBUG"/>
+    <logger name="akka.javasdk.impl.SdkRunner" level="DEBUG"/>
     <logger name="com.lb.ai.tools.AkkaToolCallResultConverter" level="DEBUG"/>
 </included>
