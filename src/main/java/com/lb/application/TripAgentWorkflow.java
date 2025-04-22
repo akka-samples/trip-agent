@@ -104,7 +104,7 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
   // TODO move to ai?
   public FlightAPIResponseList findFlights(String question) {
     log.info("looking for flights");
-    Flux<String> chatResponseFlights =
+    String chatResponseFlights =
         chatClient
             .prompt(
                 String.format(
@@ -116,11 +116,10 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
                        """,
                     question))
             .tools(FlightBookingAPITool.getMethodToolCallback("findFlights"))
-                .stream()
+                .call()
             .content();
     log.debug("parsing flights: {}", chatResponseFlights);
-    var bl = String.join("", Objects.requireNonNull(chatResponseFlights.collectList().block()));
-    String onlyFlights = extractJson(bl);
+    String onlyFlights = extractJson(chatResponseFlights);
     return new FlightAPIResponseList(
         FlightAPIResponse.extract(new ByteArrayInputStream(onlyFlights.getBytes())));
   }
