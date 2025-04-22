@@ -3,10 +3,8 @@ package com.lb.application;
 import akka.Done;
 import akka.javasdk.annotations.ComponentId;
 import akka.javasdk.eventsourcedentity.EventSourcedEntity;
-import com.lb.ai.tools.AccommodationAPIResponse;
 import com.lb.domain.Accommodation;
 import com.lb.domain.AccommodationEvent;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -6,8 +6,9 @@ import akka.javasdk.annotations.http.Post;
 import akka.javasdk.client.ComponentClient;
 import com.lb.ai.models.TripAgentChatModel;
 import com.lb.application.TripAgentWorkflow;
-import com.lb.application.TripCoordinator;
+import com.lb.domain.TripSearchState;
 import java.util.concurrent.CompletionStage;
+import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,21 +26,21 @@ public class TripEndpoint {
   // check there's a email in content otherwise return the failures.
   @Post("/search/")
   public String searchTrip(Question question) {
-      componentClient
-          .forWorkflow(String.valueOf(question.hashCode()))
-          .method(TripAgentWorkflow::startSearch)
-          .invoke(question.question);
+    if (!TripSearchState.findEmail(question.question))
+      return "Missing email to send you the results. Please add an email along the question";
+    componentClient
+        .forWorkflow(String.valueOf(question.hashCode()))
+        .method(TripAgentWorkflow::startSearch)
+        .invoke(question.question);
     return "Request received. We'll sent an email shortly.";
   }
 
   @Post("/book")
   public CompletionStage<String> book(BookingTripRequest bookingTripRequest) {
-    // WIP
-    return null;
+    throw new NotImplementedException("Not implemented yet");
   }
 
   /**
-   *
    * @param flightRef
    * @param accommodationRef
    */

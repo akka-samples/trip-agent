@@ -13,15 +13,11 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.time.Duration;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
-import reactor.core.publisher.Flux;
 
 @ComponentId("trip-agent")
 public class TripAgentWorkflow extends Workflow<TripSearchState> {
@@ -52,8 +48,8 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
                       .transitionTo("search-accommodations", currentState().userRequest());
                 })
             .timeout(Duration.ofSeconds(60));
-    // Step 2 look for accommodations (maybe this and the above using async)
 
+    // Step 2 look for accommodations
     Step searchAccommodations =
         step("search-accommodations")
             .call(String.class, this::findAccommodations)
@@ -69,14 +65,14 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
                 })
             .timeout(Duration.ofSeconds(60));
 
-    // Step 2 send mail (whether plan succeeds or not
+    // Step 3 send mail
     Step sendMail =
         step("send-mail")
             .call(
                 String.class,
                 request -> {
                   return sendMail(
-                          currentState().userRequest(),
+                      currentState().userRequest(),
                       currentState().trip().flights(),
                       currentState().trip().accommodations());
                 })
@@ -88,27 +84,33 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
             .timeout(Duration.ofSeconds(90));
 
     Step errorHandler =
-            step("error-handler")
-                    .call(() -> {
-                      log.error("Trip request failed. Final state {}", currentState());
-                      return Done.done();
-                    }).andThen(Done.class, __ ->
-                            effects()
-                                    .updateState(currentState().withRequestStatus(TripSearchState.RequestStatus.FAILED))
-                                    .end());
+        step("error-handler")
+            .call(
+                () -> {
+                  log.error("Trip request failed. Final state {}", currentState());
+                  return Done.done();
+                })
+            .andThen(
+                Done.class,
+                __ ->
+                    effects()
+                        .updateState(
+                            currentState().withRequestStatus(TripSearchState.RequestStatus.FAILED))
+                        .end());
 
     // Step 3 deal with errors
     return workflow()
-            .addStep(searchFlights)
-            .addStep(searchAccommodations)
-            .addStep(sendMail)
-            .failoverTo("error-handler", maxRetries(0));
+        .addStep(searchFlights)
+        .addStep(searchAccommodations)
+        .addStep(sendMail)
+        .failoverTo("error-handler", maxRetries(0));
   }
 
   public Effect<String> startSearch(String userRequest) {
     // TODO return error directly if not email is provided.
     TripSearchState initialState =
-        new TripSearchState(userRequest, TripSearchState.Trip.empty(), TripSearchState.RequestStatus.RECEIVED);
+        new TripSearchState(
+            userRequest, TripSearchState.Trip.empty(), TripSearchState.RequestStatus.RECEIVED);
     return effects()
         .updateState(initialState)
         .transitionTo("search-flights", userRequest)
@@ -131,7 +133,7 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
                        """,
                     userRequest))
             .tools(FlightBookingAPITool.getMethodToolCallback("findFlights"))
-                .call()
+            .call()
             .content();
     log.debug("parsing flights: {}", chatResponseFlights);
     String onlyFlights = extractJson(chatResponseFlights);
@@ -150,15 +152,16 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
               .invokeAsync(flight);
         });
   }
+
   private void storeAccommodations(List<Accommodation> chatResponseAccommodations) {
     // load accommodations into entities
     chatResponseAccommodations.forEach(
-            accommodation -> {
-              componentClient
-                      .forEventSourcedEntity(accommodation.id())
-                      .method(AccommodationBookingEntity::create)
-                      .invokeAsync(accommodation);
-            });
+        accommodation -> {
+          componentClient
+              .forEventSourcedEntity(accommodation.id())
+              .method(AccommodationBookingEntity::create)
+              .invokeAsync(accommodation);
+        });
   }
 
   private AccommodationAPIResponseList findAccommodations(String question) {

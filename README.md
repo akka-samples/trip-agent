@@ -31,10 +31,10 @@ The result (in `localhost:8025`) should be something like:
 ![mail_center.png](mail_center.png)
 ![mail_bottom.png](mail_bottom.png)
 
-TODO if aim for expansion 
+Possible routes to extend the example: 
 - improve prompt https://docs.spring.io/spring-ai/reference/api/prompt.html
-- using workflow to reserve best value bookingTripRequest after query
-- using timers to check if the flights/accommodations are still available in the market (if fake is refactored to use a real/external endpoint)
+- Pre-reserve best value trip after request and send an email with that reservation to user 
+- using timers to check if the flights/accommodations are still available in the market (fake must be then refactored to use a real/external endpoint)
 
 Afterthoughts:
 - How can we do integration tests without consuming LLM credit?

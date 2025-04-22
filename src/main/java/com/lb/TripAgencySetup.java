@@ -4,15 +4,13 @@ import akka.javasdk.DependencyProvider;
 import akka.javasdk.ServiceSetup;
 import akka.javasdk.annotations.Setup;
 import com.lb.ai.models.TripAgentChatModel;
+import java.time.Duration;
 import org.springframework.ai.anthropic.AnthropicChatOptions;
 import org.springframework.ai.anthropic.api.AnthropicApi;
 import org.springframework.ai.retry.RetryUtils;
-import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.reactive.function.client.WebClient;
-
-import java.time.Duration;
 
 @Setup
 public class TripAgencySetup implements ServiceSetup {
@@ -27,10 +25,18 @@ public class TripAgencySetup implements ServiceSetup {
 
   @Override
   public DependencyProvider createDependencyProvider() {
-    SimpleClientHttpRequestFactory simpleClientHttpRequestFactory =  new SimpleClientHttpRequestFactory();
+    SimpleClientHttpRequestFactory simpleClientHttpRequestFactory =
+        new SimpleClientHttpRequestFactory();
     simpleClientHttpRequestFactory.setReadTimeout(Duration.ofSeconds(120));
-    RestClient.Builder clientBuilder = RestClient.builder().requestFactory(simpleClientHttpRequestFactory);
-    var anthropicApi = new AnthropicApi(AnthropicApi.DEFAULT_BASE_URL, System.getenv("ANTHROPIC_API_KEY"), AnthropicApi.DEFAULT_ANTHROPIC_VERSION, clientBuilder, WebClient.builder(),
+    RestClient.Builder clientBuilder =
+        RestClient.builder().requestFactory(simpleClientHttpRequestFactory);
+    var anthropicApi =
+        new AnthropicApi(
+            AnthropicApi.DEFAULT_BASE_URL,
+            System.getenv("ANTHROPIC_API_KEY"),
+            AnthropicApi.DEFAULT_ANTHROPIC_VERSION,
+            clientBuilder,
+            WebClient.builder(),
             RetryUtils.DEFAULT_RESPONSE_ERROR_HANDLER);
     var chatModelOptions =
         AnthropicChatOptions.builder()
