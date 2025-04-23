@@ -4,8 +4,6 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Random;
 import org.springframework.ai.tool.annotation.Tool;
-import org.springframework.ai.tool.definition.DefaultToolDefinition;
-import org.springframework.ai.tool.execution.ToolExecutionException;
 import org.springframework.ai.tool.method.MethodToolCallback;
 
 public class FlightBookingAPITool {

@@ -27,6 +27,7 @@ public class TripEndpoint {
   }
 
   public record Question(String question) {}
+
   // check there's a email in content otherwise return the failures.
   @Post("/search/")
   public String searchTrip(Question question) {
@@ -44,6 +45,7 @@ public class TripEndpoint {
    * @param accommodationRef
    */
   public record BookingTripRequest(String flightRef, String accommodationRef) {}
+
   @Post("/book")
   public String book(BookingTripRequest bookingTripRequest) {
     throw new NotImplementedException("Not implemented. Out of scope");
@@ -56,7 +58,4 @@ public class TripEndpoint {
     if (workflowState.isEmpty()) throw HttpException.notFound();
     return workflowState.get().toString();
   }
-
-
-
 }
