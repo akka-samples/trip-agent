@@ -6,21 +6,8 @@ import java.util.List;
 
 public class FlightMapper {
 
-  // TODO probably not needed
   public static List<Flight> mapFlights(List<FlightAPIResponse> flights) {
-    return flights.stream()
-        .map(
-            f -> {
-              return new Flight(
-                  f.id(),
-                  f.from(),
-                  f.to(),
-                  f.departure(),
-                  f.arrival(),
-                  f.price(),
-                  Flight.Status.UNINITIALIZED);
-            })
-        .toList();
+    return flights.stream().map(FlightMapper::mapFlight).toList();
   }
 
   public static Flight mapFlight(FlightAPIResponse f) {

@@ -32,9 +32,10 @@ The result (in `localhost:8025`) should be something like:
 ![mail_bottom.png](mail_bottom.png)
 
 Possible routes to extend the example: 
-- improve prompt https://docs.spring.io/spring-ai/reference/api/prompt.html
+- improve prompt https://docs.spring.io/spring-ai/reference/api/prompt.html and include Patrik suggestions.
 - Pre-reserve best value trip after request and send an email with that reservation to user 
 - using timers to check if the flights/accommodations are still available in the market (fake must be then refactored to use a real/external endpoint)
+- using views to check if flights already exist for the requested dates/constraints
 
 Afterthoughts:
 - How can we do integration tests without consuming LLM credit?

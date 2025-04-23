@@ -37,7 +37,7 @@ public class TripEndpoint {
 
   @Post("/book")
   public CompletionStage<String> book(BookingTripRequest bookingTripRequest) {
-    throw new NotImplementedException("Not implemented yet");
+    throw new NotImplementedException("Not implemented. Out of scope");
   }
 
   /**

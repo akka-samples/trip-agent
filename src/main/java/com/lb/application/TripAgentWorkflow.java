@@ -9,12 +9,8 @@ import com.lb.ai.tools.*;
 import com.lb.domain.Accommodation;
 import com.lb.domain.Flight;
 import com.lb.domain.TripSearchState;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.time.Duration;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
@@ -107,7 +103,6 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
   }
 
   public Effect<String> startSearch(String userRequest) {
-    // TODO return error directly if not email is provided.
     TripSearchState initialState =
         new TripSearchState(
             userRequest, TripSearchState.Trip.empty(), TripSearchState.RequestStatus.RECEIVED);
@@ -118,28 +113,21 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
             "\"We are processing your userRequest. We'll send you the response to your email in a minute.");
   }
 
-  // TODO move to ai?
   public FlightAPIResponseList findFlights(String userRequest) {
     log.info("looking for flights");
-    String chatResponseFlights =
-        chatClient
-            .prompt(
-                String.format(
-                    """
+    return chatClient
+        .prompt(
+            String.format(
+                """
                        find ONLY flights with the following constraints %s. Ignore any constraints that don't refer flights
                        Parse the flights as a JSON such they fit a schema parseable to a Java class like this:
                        FlightAPIResponse(String id, String from, String to, ZonedDateTime departure, ZonedDateTime arrival, int price)
                        Create the JSON such it has only a list of FlightAPIResponse, do not add any other field
                        """,
-                    userRequest))
-            .tools(FlightBookingAPITool.getMethodToolCallback("findFlights"))
-            .call()
-            .content();
-    log.debug("parsing flights: {}", chatResponseFlights);
-    String onlyFlights = extractJson(chatResponseFlights);
-    InputStream flightStream = new ByteArrayInputStream(onlyFlights.getBytes());
-    List<FlightAPIResponse> flightAPIResponses = FlightAPIResponse.extract(flightStream);
-    return new FlightAPIResponseList(flightAPIResponses);
+                userRequest))
+        .tools(FlightBookingAPITool.getMethodToolCallback("findFlights"))
+        .call()
+        .entity(FlightAPIResponseList.class);
   }
 
   private void storeFlights(List<Flight> chatResponseFlights) {
@@ -166,26 +154,19 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
 
   private AccommodationAPIResponseList findAccommodations(String question) {
     log.info("looking for accommodations");
-    String responseAccommodations =
-        chatClient
-            .prompt(
-                String.format(
-                    """
+    return chatClient
+        .prompt(
+            String.format(
+                """
                         find ONLY accommodations with the following constraints %s. Ignore any constraints that don't refer accommodations
                         Parse the accommodations as a JSON such they fit a schema parseable to a Java class like this:
                         AccommodationAPIResponse( String id, String name, String neighborhood, ZonedDateTime checkin, ZonedDateTime checkout, int pricepernight)
                         Create the JSON such it has only a list of AccommodationAPIResponse, do not add any other field
                         """,
-                    question))
-            .tools(AccommodationBookingAPITool.getMethodToolCallback("findAccommodations"))
-            .call()
-            .content();
-    log.debug("parsing accommodations: {}", responseAccommodations);
-    String accommodationsJson = extractJson(responseAccommodations);
-    InputStream accommodationStream = new ByteArrayInputStream(accommodationsJson.getBytes());
-    List<AccommodationAPIResponse> accommodationAPIResponses =
-        AccommodationAPIResponse.extract(accommodationStream);
-    return new AccommodationAPIResponseList(accommodationAPIResponses);
+                question))
+        .tools(AccommodationBookingAPITool.getMethodToolCallback("findAccommodations"))
+        .call()
+        .entity(AccommodationAPIResponseList.class);
   }
 
   public boolean sendMail(
@@ -211,16 +192,5 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
 
   record AccommodationAPIResponseList(List<AccommodationAPIResponse> accommodations) {}
 
-  public static String extractJson(String response) {
-    Pattern pattern = Pattern.compile("\\[.*?]", Pattern.DOTALL);
-    Matcher matcher = pattern.matcher(response);
-    if (matcher.find()) {
-      return matcher.group(0);
-    }
-    String message = "Could not extract json from response";
-    log.error("{}: {}", message, response);
-    throw new IllegalArgumentException(message);
-  }
-
-  record FlightAPIResponseList(List<FlightAPIResponse> flights) {}
+  private record FlightAPIResponseList(List<FlightAPIResponse> flights) {}
 }
