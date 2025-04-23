@@ -1,6 +1,7 @@
 package com.lb.domain;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -31,10 +32,16 @@ public record TripSearchState(String userRequest, Trip trip, RequestStatus reque
     }
   }
 
-  public enum RequestStatus {
-    RECEIVED,
-    PROCESSING,
-    PROCESSED,
+  public record RequestStatus(StatusTag tag, Optional<String> description) {
+    public RequestStatus(StatusTag tag) {
+      this(tag, Optional.empty());
+    }
+  }
+  ;
+
+  public enum StatusTag {
+    STARTED,
+    SUCCESSFULLY_FINISHED,
     FAILED
   }
 

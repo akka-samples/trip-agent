@@ -2,6 +2,8 @@ package com.lb.ai.models;
 
 import io.micrometer.observation.ObservationRegistry;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.ai.anthropic.AnthropicChatModel;
 import org.springframework.ai.anthropic.AnthropicChatOptions;
 import org.springframework.ai.anthropic.api.AnthropicApi;
@@ -11,6 +13,9 @@ import org.springframework.ai.tool.execution.DefaultToolExecutionExceptionProces
 import org.springframework.ai.tool.resolution.DelegatingToolCallbackResolver;
 
 public class TripAgentChatModel extends AnthropicChatModel {
+
+  private static final Logger logger = LoggerFactory.getLogger(TripAgentChatModel.class);
+
   public TripAgentChatModel(AnthropicApi anthropicApi, AnthropicChatOptions chatModelOptions) {
     super(
         anthropicApi,
@@ -18,7 +23,7 @@ public class TripAgentChatModel extends AnthropicChatModel {
         new DefaultToolCallingManager(
             ObservationRegistry.NOOP,
             new DelegatingToolCallbackResolver(List.of()),
-            DefaultToolExecutionExceptionProcessor.builder().build()),
+            new DefaultToolExecutionExceptionProcessor(true)),
         RetryUtils.DEFAULT_RETRY_TEMPLATE,
         ObservationRegistry.NOOP);
   }

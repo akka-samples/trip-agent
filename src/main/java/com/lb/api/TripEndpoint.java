@@ -1,13 +1,16 @@
 package com.lb.api;
 
 import akka.javasdk.annotations.Acl;
+import akka.javasdk.annotations.http.Get;
 import akka.javasdk.annotations.http.HttpEndpoint;
 import akka.javasdk.annotations.http.Post;
 import akka.javasdk.client.ComponentClient;
+import akka.javasdk.http.HttpException;
 import com.lb.ai.models.TripAgentChatModel;
 import com.lb.application.TripAgentWorkflow;
 import com.lb.domain.TripSearchState;
-import java.util.concurrent.CompletionStage;
+import java.util.Optional;
+import java.util.UUID;
 import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,20 +26,17 @@ public class TripEndpoint {
     this.componentClient = componentClient;
   }
 
+  public record Question(String question) {}
   // check there's a email in content otherwise return the failures.
   @Post("/search/")
   public String searchTrip(Question question) {
     if (!TripSearchState.findEmail(question.question))
       return "Missing email to send you the results. Please add an email along the question";
+    UUID uuid = UUID.randomUUID();
     return componentClient
-        .forWorkflow(String.valueOf(question.hashCode()))
+        .forWorkflow(String.valueOf(uuid))
         .method(TripAgentWorkflow::startSearch)
         .invoke(question.question);
-  }
-
-  @Post("/book")
-  public CompletionStage<String> book(BookingTripRequest bookingTripRequest) {
-    throw new NotImplementedException("Not implemented. Out of scope");
   }
 
   /**
@@ -44,6 +44,19 @@ public class TripEndpoint {
    * @param accommodationRef
    */
   public record BookingTripRequest(String flightRef, String accommodationRef) {}
+  @Post("/book")
+  public String book(BookingTripRequest bookingTripRequest) {
+    throw new NotImplementedException("Not implemented. Out of scope");
+  }
 
-  public record Question(String question) {}
+  @Get("/{uuid}")
+  public String checkWorkflow(String uuid) {
+    Optional<TripSearchState> workflowState =
+        componentClient.forWorkflow(uuid).method(TripAgentWorkflow::getState).invoke();
+    if (workflowState.isEmpty()) throw HttpException.notFound();
+    return workflowState.get().toString();
+  }
+
+
+
 }
