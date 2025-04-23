@@ -9,7 +9,8 @@ public class AccommodationBookingAPITool {
 
   @Tool(description = "find accommodations")
   public List<AccommodationAPIResponse> findAccommodations() {
-    // If the accommodations results weren't fake we should add params
+    // If the accommodations results weren't fake you should add params
+    //    if(new Random().nextInt(5) % 5 == 0) throw new RuntimeException("Chaos monkey exception");
     InputStream in =
         AccommodationBookingAPITool.class
             .getClassLoader()

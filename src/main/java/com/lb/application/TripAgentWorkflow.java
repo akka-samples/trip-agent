@@ -110,7 +110,7 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
         .updateState(initialState)
         .transitionTo("search-flights", userRequest)
         .thenReply(
-            "\"We are processing your userRequest. We'll send you the response to your email in a minute.");
+            "We are processing your Request. We'll send you the response to your email in a minute.");
   }
 
   public FlightAPIResponseList findFlights(String userRequest) {
@@ -119,10 +119,8 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
         .prompt(
             String.format(
                 """
-                       find ONLY flights with the following constraints %s. Ignore any constraints that don't refer flights
-                       Parse the flights as a JSON such they fit a schema parseable to a Java class like this:
-                       FlightAPIResponse(String id, String from, String to, ZonedDateTime departure, ZonedDateTime arrival, int price)
-                       Create the JSON such it has only a list of FlightAPIResponse, do not add any other field
+                       find ONLY flights within the following constraints %s. Ignore any constraints that don't refer flights
+                       If some error shows in the tool you are using do not provide any flights.
                        """,
                 userRequest))
         .tools(FlightBookingAPITool.getMethodToolCallback("findFlights"))
@@ -158,10 +156,8 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
         .prompt(
             String.format(
                 """
-                        find ONLY accommodations with the following constraints %s. Ignore any constraints that don't refer accommodations
-                        Parse the accommodations as a JSON such they fit a schema parseable to a Java class like this:
-                        AccommodationAPIResponse( String id, String name, String neighborhood, ZonedDateTime checkin, ZonedDateTime checkout, int pricepernight)
-                        Create the JSON such it has only a list of AccommodationAPIResponse, do not add any other field
+                        find ONLY accommodations within the following constraints %s. Ignore any constraints that don't refer accommodations
+                        If some error shows in the tool you are using do not provide any accommodations.
                         """,
                 question))
         .tools(AccommodationBookingAPITool.getMethodToolCallback("findAccommodations"))

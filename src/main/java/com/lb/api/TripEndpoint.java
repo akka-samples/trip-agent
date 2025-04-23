@@ -28,11 +28,10 @@ public class TripEndpoint {
   public String searchTrip(Question question) {
     if (!TripSearchState.findEmail(question.question))
       return "Missing email to send you the results. Please add an email along the question";
-    componentClient
+    return componentClient
         .forWorkflow(String.valueOf(question.hashCode()))
         .method(TripAgentWorkflow::startSearch)
         .invoke(question.question);
-    return "Request received. We'll sent an email shortly.";
   }
 
   @Post("/book")

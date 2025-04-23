@@ -19,13 +19,19 @@ public class EmailAPITool {
   private static final AtomicBoolean sentEmail = new AtomicBoolean(false);
 
   private static final Properties props = new Properties();
+  private static final String smtpHostEnv = System.getenv("SMTP_HOST");
+  private static final String smtpPortEnv = System.getenv("SMTP_PORT");
+  private static final String smtpAuthEnv = System.getenv("SMTP_AUTH");
+  private static final String smtpStartTLSEnv = System.getenv("SMTP_START_TLS");
 
   static {
-    props.put("mail.smtp.host", smtpHost);
-    props.put("mail.smtp.port", smtpPort);
-    props.put("mail.smtp.auth", "false");
-    props.put("mail.smtp.starttls.enable", "false");
+    props.put("mail.smtp.host", smtpHostEnv != null ? smtpHostEnv : smtpHost);
+    props.put("mail.smtp.port", smtpPortEnv != null ? smtpPortEnv : smtpPort);
+    props.put("mail.smtp.auth", smtpAuthEnv != null ? smtpAuthEnv : "false");
+    props.put("mail.smtp.starttls.enable", smtpStartTLSEnv != null ? smtpStartTLSEnv : "false");
   }
+
+  private static final Session session = Session.getInstance(props);
 
   @Tool(
       description =
@@ -39,7 +45,6 @@ public class EmailAPITool {
       if (!sentEmail
           .get()) { // Avoiding spam in case LLM tries to use it more than once (which is common
         // ATM)
-        Session session = Session.getInstance(props);
         MimeMessage message = new MimeMessage(session);
         message.setFrom(new InternetAddress(from));
         message.setRecipients(MimeMessage.RecipientType.TO, InternetAddress.parse(to));

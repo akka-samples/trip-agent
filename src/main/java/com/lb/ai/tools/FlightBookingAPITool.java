@@ -9,7 +9,8 @@ public class FlightBookingAPITool {
 
   @Tool(description = "find flights")
   public List<FlightAPIResponse> findFlights() {
-    // If the flight results weren't fake we should add params
+    //    if(new Random().nextInt(5) % 5 == 0) throw new RuntimeException("Chaos monkey exception");
+    // If the flight results weren't fake you should add params
     InputStream in = getClass().getClassLoader().getResourceAsStream("flights.json");
     return FlightAPIResponse.extract(in);
   }
