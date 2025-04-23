@@ -25,6 +25,7 @@ public class TripAgencySetup implements ServiceSetup {
 
   @Override
   public DependencyProvider createDependencyProvider() {
+    // Extending the read time to allow LLM to process request
     SimpleClientHttpRequestFactory simpleClientHttpRequestFactory =
         new SimpleClientHttpRequestFactory();
     simpleClientHttpRequestFactory.setReadTimeout(Duration.ofSeconds(120));

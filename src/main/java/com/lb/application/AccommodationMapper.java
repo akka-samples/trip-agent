@@ -20,6 +20,6 @@ public class AccommodationMapper {
         a.checkin(),
         a.checkout(),
         a.pricepernight(),
-        Accommodation.Status.UNINITIALIZED);
+        Accommodation.Status.AVAILABLE);
   }
 }

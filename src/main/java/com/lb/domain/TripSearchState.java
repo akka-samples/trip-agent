@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Stream;
 
 public record TripSearchState(String userRequest, Trip trip, RequestStatus requestState) {
 
@@ -20,10 +19,6 @@ public record TripSearchState(String userRequest, Trip trip, RequestStatus reque
 
   public TripSearchState withRequestStatus(RequestStatus requestStatus) {
     return new TripSearchState(userRequest, this.trip, requestStatus);
-  }
-
-  public TripSearchState withFlights(Stream<Flight> flights) {
-    return withFlights(flights.toList());
   }
 
   public record Trip(List<Flight> flights, List<Accommodation> accommodations) {

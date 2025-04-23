@@ -2,7 +2,6 @@ package com.lb.ai.tools;
 
 import java.io.InputStream;
 import java.util.List;
-import java.util.Random;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.method.MethodToolCallback;
 
@@ -10,7 +9,6 @@ public class FlightBookingAPITool {
 
   @Tool(description = "find flights")
   public List<FlightAPIResponse> findFlights() {
-    if (new Random().nextInt(5) % 5 == 0) throw new RuntimeException("Chaos monkey exception");
     // If the flight results weren't fake you should add params
     InputStream in = getClass().getClassLoader().getResourceAsStream("flights.json");
     return FlightAPIResponse.extract(in);

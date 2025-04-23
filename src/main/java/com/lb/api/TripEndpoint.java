@@ -7,11 +7,15 @@ import akka.javasdk.annotations.http.Post;
 import akka.javasdk.client.ComponentClient;
 import akka.javasdk.http.HttpException;
 import com.lb.ai.models.TripAgentChatModel;
+import com.lb.application.AccommodationBookingEntity;
+import com.lb.application.FlightBookingEntity;
 import com.lb.application.TripAgentWorkflow;
+import com.lb.domain.Accommodation;
+import com.lb.domain.Flight;
 import com.lb.domain.TripSearchState;
+import java.time.ZonedDateTime;
 import java.util.Optional;
 import java.util.UUID;
-import org.apache.commons.lang3.NotImplementedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -48,11 +52,89 @@ public class TripEndpoint {
 
   @Post("/book")
   public String book(BookingTripRequest bookingTripRequest) {
-    throw new NotImplementedException("Not implemented. Out of scope");
+    componentClient
+        .forEventSourcedEntity(bookingTripRequest.flightRef)
+        .method(FlightBookingEntity::book)
+        .invoke();
+    componentClient
+        .forEventSourcedEntity(bookingTripRequest.accommodationRef)
+        .method(AccommodationBookingEntity::book)
+        .invoke();
+    return "Booking requested.";
   }
 
-  @Get("/{uuid}")
-  public String checkWorkflow(String uuid) {
+  private record FlightBookingRequest(
+      String flightRef,
+      String from,
+      String to,
+      ZonedDateTime departure,
+      ZonedDateTime arrival,
+      int price,
+      Status status) {
+    static FlightBookingRequest transform(Flight domainFlight) {
+      Status status = Status.AVAILABLE;
+      if (domainFlight.status().equals(Flight.Status.BOOKED)) {
+        status = Status.BOOKED;
+      }
+      return new FlightBookingRequest(
+          domainFlight.id(),
+          domainFlight.from(),
+          domainFlight.to(),
+          domainFlight.departure(),
+          domainFlight.arrival(),
+          domainFlight.price(),
+          status);
+    }
+  }
+
+  enum Status {
+    BOOKED,
+    AVAILABLE
+  }
+
+  @Get("/flight/{id}")
+  public FlightBookingRequest getFlight(String id) {
+    Flight flight =
+        componentClient.forEventSourcedEntity(id).method(FlightBookingEntity::getState).invoke();
+    return FlightBookingRequest.transform(flight);
+  }
+
+  record AccommodationBookingRequest(
+      String flightRef,
+      String name,
+      String neighborhood,
+      ZonedDateTime checkin,
+      ZonedDateTime checkout,
+      int pricepernight,
+      Status status) {
+    static AccommodationBookingRequest transform(Accommodation domainAccommodation) {
+      Status status = Status.AVAILABLE;
+      if (domainAccommodation.status().equals(Accommodation.Status.BOOKED)) {
+        status = Status.BOOKED;
+      }
+      return new AccommodationBookingRequest(
+          domainAccommodation.id(),
+          domainAccommodation.name(),
+          domainAccommodation.neighborhood(),
+          domainAccommodation.checkin(),
+          domainAccommodation.checkout(),
+          domainAccommodation.pricepernight(),
+          status);
+    }
+  }
+
+  @Get("/accommodation/{id}")
+  public AccommodationBookingRequest getAccommodation(String id) {
+    Accommodation accommodation =
+        componentClient
+            .forEventSourcedEntity(id)
+            .method(AccommodationBookingEntity::getState)
+            .invoke();
+    return AccommodationBookingRequest.transform(accommodation);
+  }
+
+  @Get("/workflow/{uuid}")
+  public String getWorkflow(String uuid) {
     Optional<TripSearchState> workflowState =
         componentClient.forWorkflow(uuid).method(TripAgentWorkflow::getState).invoke();
     if (workflowState.isEmpty()) throw HttpException.notFound();

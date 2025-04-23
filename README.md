@@ -36,6 +36,28 @@ curl http://localhost:9000/trip/search \
 -d '{"question": "find a bookingTripRequest from seoul to tokyo and back, from 2025-05-07 to 2025-05-14 The flight price not higher than 300 total and the total accommodation for the week not higher than 600. Send the suggestion to 'test.user@gmail.com'"
 }'
 ```
+This will return an `uuid` that you can later use the check the state of the workflow.
+
+## Book a trip
+
+```shell
+url http://localhost:9000/trip/book -d '{"flightRef":"12", "accommodationRef":"117"}' --header "Content-type: application/json"
+```
+
+## Check the state
+
+```shell
+curl http://localhost:9000/trip/workflow/[uuid-here]
+```
+
+```shell
+curl http://localhost:9000/trip/flight/12
+```
+
+```shell
+curl http://localhost:9000/trip/accommodation/117
+```
+
 
 The result (in `localhost:8025`) should be something like: 
 
