@@ -14,9 +14,9 @@ import org.springframework.web.client.RestClient;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Setup
-public class TripAgencySetup implements ServiceSetup {
+public class TripAgentSetup implements ServiceSetup {
 
-  public TripAgencySetup() {
+  public TripAgentSetup() {
     String anthropicApiKey = System.getenv("ANTHROPIC_API_KEY");
     if (anthropicApiKey == null) {
       throw new RuntimeException(
