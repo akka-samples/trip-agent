@@ -1,7 +1,8 @@
-package com.lb.ai.models;
+package com.tripagent.ai.models;
+
+import java.util.List;
 
 import io.micrometer.observation.ObservationRegistry;
-import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.anthropic.AnthropicChatModel;

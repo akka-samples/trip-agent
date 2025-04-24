@@ -1,4 +1,8 @@
-package com.lb.api;
+package com.tripagent.api;
+
+import java.time.ZonedDateTime;
+import java.util.Optional;
+import java.util.UUID;
 
 import akka.javasdk.annotations.Acl;
 import akka.javasdk.annotations.http.Get;
@@ -6,16 +10,13 @@ import akka.javasdk.annotations.http.HttpEndpoint;
 import akka.javasdk.annotations.http.Post;
 import akka.javasdk.client.ComponentClient;
 import akka.javasdk.http.HttpException;
-import com.lb.ai.models.TripAgentChatModel;
-import com.lb.application.AccommodationBookingEntity;
-import com.lb.application.FlightBookingEntity;
-import com.lb.application.TripAgentWorkflow;
-import com.lb.domain.Accommodation;
-import com.lb.domain.Flight;
-import com.lb.domain.TripSearchState;
-import java.time.ZonedDateTime;
-import java.util.Optional;
-import java.util.UUID;
+import com.tripagent.ai.models.TripAgentChatModel;
+import com.tripagent.application.AccommodationBookingEntity;
+import com.tripagent.application.FlightBookingEntity;
+import com.tripagent.application.TripAgentWorkflow;
+import com.tripagent.domain.Accommodation;
+import com.tripagent.domain.Flight;
+import com.tripagent.domain.TripSearchState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,7 +64,7 @@ public class TripEndpoint {
     return "Booking requested.";
   }
 
-  private record FlightBookingRequest(
+  private record FlightBookingResponse(
       String flightRef,
       String from,
       String to,
@@ -71,12 +72,12 @@ public class TripEndpoint {
       ZonedDateTime arrival,
       int price,
       Status status) {
-    static FlightBookingRequest transform(Flight domainFlight) {
+    static FlightBookingResponse transform(Flight domainFlight) {
       Status status = Status.AVAILABLE;
       if (domainFlight.status().equals(Flight.Status.BOOKED)) {
         status = Status.BOOKED;
       }
-      return new FlightBookingRequest(
+      return new FlightBookingResponse(
           domainFlight.id(),
           domainFlight.from(),
           domainFlight.to(),
@@ -93,13 +94,13 @@ public class TripEndpoint {
   }
 
   @Get("/flight/{id}")
-  public FlightBookingRequest getFlight(String id) {
+  public FlightBookingResponse getFlight(String id) {
     Flight flight =
         componentClient.forEventSourcedEntity(id).method(FlightBookingEntity::getState).invoke();
-    return FlightBookingRequest.transform(flight);
+    return FlightBookingResponse.transform(flight);
   }
 
-  record AccommodationBookingRequest(
+  record AccommodationBookingResponse(
       String flightRef,
       String name,
       String neighborhood,
@@ -107,12 +108,12 @@ public class TripEndpoint {
       ZonedDateTime checkout,
       int pricepernight,
       Status status) {
-    static AccommodationBookingRequest transform(Accommodation domainAccommodation) {
+    static AccommodationBookingResponse transform(Accommodation domainAccommodation) {
       Status status = Status.AVAILABLE;
       if (domainAccommodation.status().equals(Accommodation.Status.BOOKED)) {
         status = Status.BOOKED;
       }
-      return new AccommodationBookingRequest(
+      return new AccommodationBookingResponse(
           domainAccommodation.id(),
           domainAccommodation.name(),
           domainAccommodation.neighborhood(),
@@ -124,13 +125,13 @@ public class TripEndpoint {
   }
 
   @Get("/accommodation/{id}")
-  public AccommodationBookingRequest getAccommodation(String id) {
+  public AccommodationBookingResponse getAccommodation(String id) {
     Accommodation accommodation =
         componentClient
             .forEventSourcedEntity(id)
             .method(AccommodationBookingEntity::getState)
             .invoke();
-    return AccommodationBookingRequest.transform(accommodation);
+    return AccommodationBookingResponse.transform(accommodation);
   }
 
   @Get("/workflow/{uuid}")

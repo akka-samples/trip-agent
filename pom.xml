@@ -12,22 +12,26 @@
     <version>3.3.0</version>
   </parent>
 
-  <groupId>com.lb</groupId>
-  <artifactId>trip-agency</artifactId>
+  <groupId>io.akka.example</groupId>
+  <artifactId>trip-agent</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
 
-  <name>trip-agency</name>
+  <name>trip-agent</name>
 
-  <!-- Define properties for version management -->
   <properties>
+    <spring-ai.version>1.0.0-M6</spring-ai.version>
+    <angus-mail.version>2.0.3</angus-mail.version>
+    <spotless.version>2.44.3</spotless.version>
+    <google-java-format.version>1.24.0</google-java-format.version>
   </properties>
+
 <build>
   <plugins>
     <plugin>
       <groupId>com.diffplug.spotless</groupId>
       <artifactId>spotless-maven-plugin</artifactId>
-      <version>2.44.3</version>
+      <version>${spotless.version}</version>
       <executions>
         <execution>
           <goals>
@@ -38,7 +42,12 @@
       </executions>
       <configuration>
         <java>
-          <googleJavaFormat />
+          <googleJavaFormat>
+            <version>${google-java-format.version}</version>
+          </googleJavaFormat>
+          <importOrder>
+            <order>java,\#</order>
+          </importOrder>
         </java>
       </configuration>
     </plugin>
@@ -50,7 +59,7 @@
       <dependency>
         <groupId>org.springframework.ai</groupId>
         <artifactId>spring-ai-bom</artifactId>
-        <version>1.0.0-M6</version>
+        <version>${spring-ai.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -66,7 +75,7 @@
     <dependency>
       <groupId>org.eclipse.angus</groupId>
       <artifactId>angus-mail</artifactId>
-      <version>2.0.3</version>
+      <version>${angus-mail.version}</version>
     </dependency>
   </dependencies>
 </project>

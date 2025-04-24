@@ -1,10 +1,11 @@
-package com.lb;
+package com.tripagent;
+
+import java.time.Duration;
 
 import akka.javasdk.DependencyProvider;
 import akka.javasdk.ServiceSetup;
 import akka.javasdk.annotations.Setup;
-import com.lb.ai.models.TripAgentChatModel;
-import java.time.Duration;
+import com.tripagent.ai.models.TripAgentChatModel;
 import org.springframework.ai.anthropic.AnthropicChatOptions;
 import org.springframework.ai.anthropic.api.AnthropicApi;
 import org.springframework.ai.retry.RetryUtils;

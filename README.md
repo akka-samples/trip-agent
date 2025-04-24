@@ -1,4 +1,4 @@
-# bookingTripRequest-agency
+# trip-agent
 
 This app represents an agency that searches for flights and accommodations via the
 prompt from the user through a HTTP call. 
@@ -23,7 +23,7 @@ SMTP_AUTH
 SMTP_START_TLS
 ```
 
-More info in [EmailAPITool](src/main/java/com/lb/ai/tools/EmailAPITool.java);
+More info in [EmailAPITool](src/main/java/com/tripagent/ai/tools/EmailAPITool.java);
 
 > **Note**: Sending emails has only been tested when running in local.
 
@@ -41,7 +41,7 @@ This will return an `uuid` that you can later use the check the state of the wor
 ## Book a trip
 
 ```shell
-url http://localhost:9000/trip/book -d '{"flightRef":"12", "accommodationRef":"117"}' --header "Content-type: application/json"
+curl http://localhost:9000/trip/book -d '{"flightRef":"12", "accommodationRef":"117"}' --header "Content-type: application/json"
 ```
 
 ## Check the state

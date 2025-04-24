@@ -1,12 +1,12 @@
-package com.lb.application;
+package com.tripagent.application;
 
-import com.lb.ai.tools.AccommodationAPIResponse;
-import com.lb.domain.Accommodation;
 import java.util.List;
+
+import com.tripagent.ai.tools.AccommodationAPIResponse;
+import com.tripagent.domain.Accommodation;
 
 public class AccommodationMapper {
 
-  // TODO probably not needed
   public static List<Accommodation> mapAccommodations(
       List<AccommodationAPIResponse> accommodations) {
     return accommodations.stream().map(AccommodationMapper::mapAccommodation).toList();

@@ -1,8 +1,9 @@
-package com.lb.application;
+package com.tripagent.application;
 
-import com.lb.ai.tools.FlightAPIResponse;
-import com.lb.domain.Flight;
 import java.util.List;
+
+import com.tripagent.ai.tools.FlightAPIResponse;
+import com.tripagent.domain.Flight;
 
 public class FlightMapper {
 

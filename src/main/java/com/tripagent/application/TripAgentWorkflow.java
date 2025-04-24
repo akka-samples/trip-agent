@@ -1,19 +1,20 @@
-package com.lb.application;
+package com.tripagent.application;
 
-import static com.lb.domain.TripSearchState.StatusTag.*;
+import java.time.Duration;
+import java.util.List;
+import java.util.Optional;
+
+import static com.tripagent.domain.TripSearchState.StatusTag.*;
 
 import akka.Done;
 import akka.javasdk.annotations.ComponentId;
 import akka.javasdk.client.ComponentClient;
 import akka.javasdk.workflow.Workflow;
-import com.lb.ai.models.TripAgentChatModel;
-import com.lb.ai.tools.*;
-import com.lb.domain.Accommodation;
-import com.lb.domain.Flight;
-import com.lb.domain.TripSearchState;
-import java.time.Duration;
-import java.util.List;
-import java.util.Optional;
+import com.tripagent.ai.models.TripAgentChatModel;
+import com.tripagent.ai.tools.*;
+import com.tripagent.domain.Accommodation;
+import com.tripagent.domain.Flight;
+import com.tripagent.domain.TripSearchState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
@@ -156,7 +157,7 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
           componentClient
               .forEventSourcedEntity(flight.id())
               .method(FlightBookingEntity::create)
-              .invokeAsync(flight); // TODO necessary anymore, maybe only .invoke
+              .invoke(flight);
         });
   }
 
@@ -182,7 +183,7 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
           componentClient
               .forEventSourcedEntity(accommodation.id())
               .method(AccommodationBookingEntity::create)
-              .invokeAsync(accommodation); // TODO necessary anymore, maybe only .invoke
+              .invoke(accommodation);
         });
   }
 

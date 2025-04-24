@@ -9,8 +9,8 @@
      when the application runs. 
  -->
 <included>
-    <logger name="com.lb" level="INFO"/>
-    <logger name="com.lb.application.TripCoordinator" level="DEBUG"/>
-    <logger name="com.lb.application.TripAgentWorkflow" level="DEBUG"/>
-    <logger name="com.lb.ai.tools.AkkaToolCallResultConverter" level="DEBUG"/>
+    <logger name="com.tripagent" level="INFO"/>
+    <logger name="com.tripagent.application.TripCoordinator" level="DEBUG"/>
+    <logger name="com.tripagent.application.TripAgentWorkflow" level="DEBUG"/>
+    <logger name="com.tripagent.ai.tools.AkkaToolCallResultConverter" level="DEBUG"/>
 </included>

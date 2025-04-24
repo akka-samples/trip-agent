@@ -1,12 +1,13 @@
-package com.lb.ai.tools;
+package com.tripagent.ai.tools;
+
+import java.util.Properties;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.Session;
 import jakarta.mail.Transport;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
-import java.util.Properties;
-import java.util.concurrent.atomic.AtomicBoolean;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.tool.annotation.Tool;
@@ -16,7 +17,7 @@ public class EmailAPITool {
   private static final String smtpHost = "localhost";
   private static final String smtpPort = "1025";
   private static final Logger log = LoggerFactory.getLogger(EmailAPITool.class);
-  private static final AtomicBoolean sentEmail = new AtomicBoolean(false);
+  private final AtomicBoolean sentEmail = new AtomicBoolean(false);
 
   private static final Properties props = new Properties();
   private static final String smtpHostEnv = System.getenv("SMTP_HOST");

@@ -1,10 +1,10 @@
-package com.lb.application;
+package com.tripagent.application;
 
 import akka.Done;
 import akka.javasdk.annotations.ComponentId;
 import akka.javasdk.eventsourcedentity.EventSourcedEntity;
-import com.lb.domain.Accommodation;
-import com.lb.domain.AccommodationEvent;
+import com.tripagent.domain.Accommodation;
+import com.tripagent.domain.AccommodationEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

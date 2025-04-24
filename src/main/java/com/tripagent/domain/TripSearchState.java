@@ -1,4 +1,4 @@
-package com.lb.domain;
+package com.tripagent.domain;
 
 import java.util.List;
 import java.util.Optional;

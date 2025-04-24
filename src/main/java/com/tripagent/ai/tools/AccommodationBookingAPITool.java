@@ -1,7 +1,8 @@
-package com.lb.ai.tools;
+package com.tripagent.ai.tools;
 
 import java.io.InputStream;
 import java.util.List;
+
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.ai.tool.method.MethodToolCallback;
 

@@ -1,8 +1,9 @@
-package com.lb.ai.tools;
+package com.tripagent.ai.tools;
+
+import java.lang.reflect.Type;
 
 import akka.javasdk.JsonSupport;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import java.lang.reflect.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.tool.execution.ToolCallResultConverter;
