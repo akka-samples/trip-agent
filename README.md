@@ -10,25 +10,25 @@ and will email the requester with some options and the best value offer.
 
 ## Prerequisites
 
+## Running in local
+
 Start a local email service. 
 ```shell
 docker run -d -p 1025:1025 -p 8025:8025 mailhog/mailhog
 ```
 
-To send emails after deploying this app in the Akka infrastructure, you need to set the env vars:
+Add your Anthropic Key
 ```shell
-SMTP_HOST
-SMTP_PORT
-SMTP_AUTH
-SMTP_START_TLS
+export ANTHROPIC_API_KEY=[your-key-here]
 ```
 
-More info in [EmailAPITool](src/main/java/com/tripagent/ai/tools/EmailAPITool.java);
+### Start the application
 
-> **Note**: Sending emails has only been tested when running in local.
+```shell
+mvn compile exec:java
+```
 
-
-## Call the service 
+### Call the service 
 
 ```shell
 curl http://localhost:9000/trip/search \
@@ -38,17 +38,42 @@ curl http://localhost:9000/trip/search \
 ```
 This will return an `uuid` that you can later use the check the state of the workflow.
 
-## Book a trip
+The email sent by the agent (you can find in `localhost:8025`) should be something like:
 
+![mail_header.png](mail_header.png)
+![mail_center.png](mail_center.png)
+![mail_bottom.png](mail_bottom.png)
+
+
+
+
+### Check the state
+
+The workflow is the one in charge of leveraging the AI agent to look for the flights, accommodations, and send the email.
+The workflow state when `RequestStatus[tag=SUCCESSFULLY_FINISHED, ...]` should also contain the list of flights and accommodation. 
+You can check it with the following:
+```shell
+curl http://localhost:9000/trip/workflow/[uuid-here]
+```
+
+If all went well, flights have been created in the system and you should be able to access them like this:
+```shell
+curl http://localhost:9000/trip/flight/12
+```
+
+Same with the accommodations. 
+```shell
+curl http://localhost:9000/trip/accommodation/117
+```
+
+### Book a trip
+
+Since you can find what flights and accommodations the workflow state holds (mentioned above) you can now book a trip:
 ```shell
 curl http://localhost:9000/trip/book -d '{"flightRef":"12", "accommodationRef":"117"}' --header "Content-type: application/json"
 ```
 
-## Check the state
-
-```shell
-curl http://localhost:9000/trip/workflow/[uuid-here]
-```
+You might want to check the state again to verify the flight and accommodation have been booked. 
 
 ```shell
 curl http://localhost:9000/trip/flight/12
@@ -58,13 +83,24 @@ curl http://localhost:9000/trip/flight/12
 curl http://localhost:9000/trip/accommodation/117
 ```
 
+## Running in Akka infra 
+First you need to [deploy](https://doc.akka.io/operations/services/deploy-service.html) the service 
+To send emails after deploying this app in the Akka infrastructure, you need to [set the env vars](https://github.com/akka-samples/ask-akka-agent/blob/main/src/main/resources/flat-doc/secrets.md):
+```shell
+SMTP_HOST
+SMTP_PORT
+SMTP_AUTH
+SMTP_START_TLS
+```
 
-The result (in `localhost:8025`) should be something like: 
+To use anthropic LLM, set the following env var.
+```shell
+ANTHROPIC_API_KEY
+```
 
-![mail_header.png](mail_header.png)
-![mail_center.png](mail_center.png)
-![mail_bottom.png](mail_bottom.png)
+> **Note**: Sending emails has only been tested when running in local.
 
+---------
 Possible routes to extend the example: 
 - improve prompt https://docs.spring.io/spring-ai/reference/api/prompt.html and include Patrik suggestions.
 - Pre-reserve best value trip after request and send an email with that reservation to user 
