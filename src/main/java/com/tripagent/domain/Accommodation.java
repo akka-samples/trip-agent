@@ -1,11 +1,13 @@
 package com.tripagent.domain;
 
+import java.time.ZonedDateTime;
+
 public record Accommodation(
     String id,
     String name,
     String neighborhood,
-    String checkin,
-    String checkout,
+    ZonedDateTime checkin,
+    ZonedDateTime checkout,
     int pricepernight,
     Status status) {
 

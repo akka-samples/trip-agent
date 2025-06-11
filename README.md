@@ -33,7 +33,7 @@ mvn compile exec:java
 ```shell
 curl http://localhost:9000/trip/search \
 -H "Content-Type: application/json" \
--d '{"question": "find a bookingTripRequest from seoul to tokyo and back, from 2025-05-07 to 2025-05-14 The flight price not higher than 300 total and the total accommodation for the week not higher than 600. Send the suggestion to 'test.user@gmail.com'"
+-d '{"question": "find a bookingTripRequest from seoul to tokyo and back, from 2026-05-07 to 2026-05-14 The flight price not higher than 300 total and the total accommodation for the week not higher than 600. Send the suggestion to 'test.user@gmail.com'"
 }'
 ```
 This will return an `uuid` that you can later use the check the state of the workflow.

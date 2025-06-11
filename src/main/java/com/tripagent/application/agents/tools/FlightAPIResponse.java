@@ -2,6 +2,7 @@ package com.tripagent.application.agents.tools;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import akka.javasdk.JsonSupport;
@@ -10,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public record FlightAPIResponse(
-    String id, String from, String to, String departure, String arrival, int price) {
+    String id, String from, String to, ZonedDateTime departure, ZonedDateTime arrival, int price) {
 
   private static final Logger log = LoggerFactory.getLogger(FlightAPIResponse.class);
 

@@ -2,6 +2,7 @@ package com.tripagent.application.agents.tools;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import akka.javasdk.JsonSupport;
@@ -13,8 +14,8 @@ public record AccommodationAPIResponse(
     String id,
     String name,
     String neighborhood,
-    String checkin,
-    String checkout, // TODO check if using ZonedDateTime breaks it
+    ZonedDateTime checkin,
+    ZonedDateTime checkout,
     int pricepernight) {
 
   private static final Logger log = LoggerFactory.getLogger(AccommodationAPIResponse.class);

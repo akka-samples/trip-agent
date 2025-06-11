@@ -101,10 +101,7 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
                     effects()
                         .updateState(
                             currentState()
-                                .withRequestStatus(
-                                    new TripSearchState.RequestStatus(
-                                        FAILED))) // TODO verify it ends here when/if some agent
-                        // fails.
+                                .withRequestStatus(new TripSearchState.RequestStatus(FAILED)))
                         .end());
 
     // Step 3 deal with errors
@@ -141,7 +138,7 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
     log.info("looking for flights");
     return componentClient
         .forAgent()
-        .inSession("TODO-change")
+        .inSession(sessionId())
         .method(FlightSearchAgent::findFlights)
         .invoke(
             String.format(
@@ -168,7 +165,7 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
     log.info("looking for accommodations");
     return componentClient
         .forAgent()
-        .inSession("TODO-change")
+        .inSession(sessionId())
         .method(AccommodationSearchAgent::findAccommodations)
         .invoke(
             String.format(
@@ -196,7 +193,7 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
     String responseMail =
         componentClient
             .forAgent()
-            .inSession("TODO-change")
+            .inSession(sessionId())
             .method(MailSenderAgent::sendMail)
             .invoke(
                 String.format(
@@ -207,23 +204,11 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
                        parse the whole content as HTML before sending
                        """,
                     request, request, flights, accommodations));
-    //        chatClient
-    //            .prompt(
-    //                String.format(
-    //                    """
-    //                       You are allowed to use the @tool function only once in this
-    // conversation. Do not use it more than once, even if more information becomes available
-    //                       Send an email to the email provided in %s, using the requestId provide
-    // in %s and the content from %s and %s. The content has flights and accommodations
-    //                       Add in the email a recommendation with the best value combination
-    // flight (outbound and return) and accommodation
-    //                       parse the whole content as HTML before sending
-    //                       """,
-    //                    request, request, flights, accommodations))
-    //            .tools(new EmailAPITool())
-    //            .call()
-    //            .content();
     log.debug(String.format("responseMail %s", responseMail));
     return true;
+  }
+
+  private String sessionId() {
+    return commandContext().workflowId();
   }
 }

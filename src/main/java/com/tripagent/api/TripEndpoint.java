@@ -1,5 +1,6 @@
 package com.tripagent.api;
 
+import java.time.ZonedDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -66,8 +67,8 @@ public class TripEndpoint {
       String flightRef,
       String from,
       String to,
-      String departure,
-      String arrival,
+      ZonedDateTime departure,
+      ZonedDateTime arrival,
       int price,
       Status status) {
     static FlightBookingResponse transform(Flight domainFlight) {
@@ -102,8 +103,8 @@ public class TripEndpoint {
       String flightRef,
       String name,
       String neighborhood,
-      String checkin,
-      String checkout,
+      ZonedDateTime checkin,
+      ZonedDateTime checkout,
       int pricepernight,
       Status status) {
     static AccommodationBookingResponse transform(Accommodation domainAccommodation) {

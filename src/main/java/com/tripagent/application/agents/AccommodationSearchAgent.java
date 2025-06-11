@@ -24,16 +24,16 @@ public class AccommodationSearchAgent extends Agent {
                            "id": 101,
                            "name": "Shinjuku Garden Inn",
                            "neighborhood": "Shinjuku",
-                           "checkin": "2025-05-07T15:00:00Z",
-                           "checkout": "2025-05-14T11:00:00Z",
+                           "checkin": "2026-05-07T15:00:00Z",
+                           "checkout": "2026-05-14T11:00:00Z",
                            "pricepernight": 120
                          },
                          {
                            "id": 102,
                            "name": "Asakusa Riverside Hotel",
                            "neighborhood": "Asakusa",
-                           "checkin": "2025-05-07T15:00:00Z",
-                           "checkout": "2025-05-14T11:00:00Z",
+                           "checkin": "2026-05-07T15:00:00Z",
+                           "checkout": "2026-05-14T11:00:00Z",
                            "pricepernight": 85
                          }
                          ...
