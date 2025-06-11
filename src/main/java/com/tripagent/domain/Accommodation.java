@@ -1,7 +1,5 @@
 package com.tripagent.domain;
 
-import java.time.ZonedDateTime;
-
 public record Accommodation(
     String id,
     String name,

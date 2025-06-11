@@ -1,4 +1,4 @@
-package com.tripagent.ai.tools;
+package com.tripagent.application.agents.tools;
 
 import java.lang.reflect.Type;
 

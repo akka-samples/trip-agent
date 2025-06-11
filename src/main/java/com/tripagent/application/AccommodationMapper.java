@@ -2,7 +2,7 @@ package com.tripagent.application;
 
 import java.util.List;
 
-import com.tripagent.ai.tools.AccommodationAPIResponse;
+import com.tripagent.application.agents.tools.AccommodationAPIResponse;
 import com.tripagent.domain.Accommodation;
 
 public class AccommodationMapper {

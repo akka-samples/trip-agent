@@ -1,4 +1,4 @@
-package com.tripagent.ai.tools;
+package com.tripagent.application.agents.tools;
 
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -12,11 +12,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.tool.annotation.Tool;
 
-public class EmailAPITool {
+public class EmailAPIToolHelper {
 
   private static final String smtpHost = "localhost";
   private static final String smtpPort = "1025";
-  private static final Logger log = LoggerFactory.getLogger(EmailAPITool.class);
+  private static final Logger log = LoggerFactory.getLogger(EmailAPIToolHelper.class);
   private final AtomicBoolean sentEmail = new AtomicBoolean(false);
 
   private static final Properties props = new Properties();
@@ -34,9 +34,6 @@ public class EmailAPITool {
 
   private static final Session session = Session.getInstance(props);
 
-  @Tool(
-      description =
-          "Sends an email. By default: 'from' is 'trip.agency@gmail.com', 'subject' is the 'requestId' in scope.")
   public boolean sendEmail(String from, String to, String subject, String content) {
     if (content == null || content.isEmpty()) {
       log.info("Email content is null or empty. Not sending email.");

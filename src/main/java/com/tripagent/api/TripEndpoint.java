@@ -1,6 +1,5 @@
 package com.tripagent.api;
 
-import java.time.ZonedDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -10,7 +9,6 @@ import akka.javasdk.annotations.http.HttpEndpoint;
 import akka.javasdk.annotations.http.Post;
 import akka.javasdk.client.ComponentClient;
 import akka.javasdk.http.HttpException;
-import com.tripagent.ai.models.TripAgentChatModel;
 import com.tripagent.application.AccommodationBookingEntity;
 import com.tripagent.application.FlightBookingEntity;
 import com.tripagent.application.TripAgentWorkflow;

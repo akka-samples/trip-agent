@@ -1,8 +1,7 @@
-package com.tripagent.ai.tools;
+package com.tripagent.application.agents.tools;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.ZonedDateTime;
 import java.util.List;
 
 import akka.javasdk.JsonSupport;
