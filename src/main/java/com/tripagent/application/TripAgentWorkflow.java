@@ -53,7 +53,9 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
             .andThen(
                 AccommodationSearchAgent.AccommodationAPIResponseList.class,
                     response -> {
-                  List<Accommodation> domainAccommodations =
+                        System.out.println("################### got this:" + response);
+
+                        List<Accommodation> domainAccommodations =
                       AccommodationMapper.mapAccommodations(response.accommodations());
                   storeAccommodations(domainAccommodations);
                   return effects()
@@ -68,7 +70,10 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
             .call(
                 String.class,
                 request -> {
-                  return sendMail(
+                    System.out.println("################### before mail flights :" + currentState().trip().flights());
+                    System.out.println("################### before mail accommodations :" + currentState().trip().accommodations());
+
+                    return sendMail(
                       currentState().userRequest(),
                       currentState().trip().flights(),
                       currentState().trip().accommodations());
@@ -99,7 +104,7 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
                     effects()
                         .updateState(
                             currentState()
-                                .withRequestStatus(new TripSearchState.RequestStatus(FAILED)))
+                                .withRequestStatus(new TripSearchState.RequestStatus(FAILED))) //TODO verify it ends here when/if some agent fails.
                         .end());
 
     // Step 3 deal with errors

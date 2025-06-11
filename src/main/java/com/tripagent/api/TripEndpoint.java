@@ -104,8 +104,8 @@ public class TripEndpoint {
       String flightRef,
       String name,
       String neighborhood,
-      ZonedDateTime checkin,
-      ZonedDateTime checkout,
+      String checkin,
+      String checkout,
       int pricepernight,
       Status status) {
     static AccommodationBookingResponse transform(Accommodation domainAccommodation) {

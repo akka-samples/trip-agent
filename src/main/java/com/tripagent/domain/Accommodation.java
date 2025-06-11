@@ -6,8 +6,8 @@ public record Accommodation(
     String id,
     String name,
     String neighborhood,
-    ZonedDateTime checkin,
-    ZonedDateTime checkout,
+    String checkin,
+    String checkout,
     int pricepernight,
     Status status) {
 

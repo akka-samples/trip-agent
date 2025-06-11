@@ -21,7 +21,7 @@ public class FlightSearchAgent extends Agent {
             """
             You are a flight search agent in charge of looking for flights
             that accommodate user requirements.
-            For example, if you find two flights then produce a json of the type: 
+            Your response should follow a json schema like the following:
             { "flights: [
             {
                       "id": "ABC123",
@@ -32,17 +32,17 @@ public class FlightSearchAgent extends Agent {
                       "price": 350
                     },
                     {
-                              "id": "ABC124",
-                              "from": "JFK1",
-                              "to": "LAX1",
-                              "departure": "2025-06-10T08:00:00Z",
-                              "arrival": "2025-06-10T11:00:00Z",
-                              "price": 351
-                            }
+                      "id": "ABC124",
+                      "from": "JFK1",
+                      "to": "LAX1",
+                      "departure": "2025-06-10T08:00:00Z",
+                      "arrival": "2025-06-10T11:00:00Z",
+                      "price": 351
+                    }
+                    ...
             ]}
-            But if you find more than two flights add as many flights as found, accordingly.
-            Your response should follow a strict json schema as defined bellow.
             Do not include any explanations or text outside of the JSON structure.
+            Do include as many flights as possible.
             """.stripIndent();
 
     public Effect<FlightAPIResponseList> findFlights(String question) {

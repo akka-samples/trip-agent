@@ -14,8 +14,8 @@ public record AccommodationAPIResponse(
     String id,
     String name,
     String neighborhood,
-    ZonedDateTime checkin,
-    ZonedDateTime checkout,
+    String checkin,
+    String checkout, //TODO check if using ZonedDateTime breaks it
     int pricepernight) {
 
   private static final Logger log = LoggerFactory.getLogger(AccommodationAPIResponse.class);
