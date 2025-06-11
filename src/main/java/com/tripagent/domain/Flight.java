@@ -6,8 +6,8 @@ public record Flight(
     String id,
     String from,
     String to,
-    ZonedDateTime departure,
-    ZonedDateTime arrival,
+    String departure,
+    String arrival,
     int price,
     Status status) {
 

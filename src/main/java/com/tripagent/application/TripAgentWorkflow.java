@@ -10,25 +10,20 @@ import akka.Done;
 import akka.javasdk.annotations.ComponentId;
 import akka.javasdk.client.ComponentClient;
 import akka.javasdk.workflow.Workflow;
-import com.tripagent.ai.models.TripAgentChatModel;
-import com.tripagent.ai.tools.*;
 import com.tripagent.domain.Accommodation;
 import com.tripagent.domain.Flight;
 import com.tripagent.domain.TripSearchState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.ai.chat.client.ChatClient;
 
 @ComponentId("trip-agent")
 public class TripAgentWorkflow extends Workflow<TripSearchState> {
 
   private static final Logger log = LoggerFactory.getLogger(TripAgentWorkflow.class);
 
-  private final ChatClient chatClient;
   private final ComponentClient componentClient;
 
-  public TripAgentWorkflow(ComponentClient componentClient, TripAgentChatModel tripAgentChatModel) {
-    this.chatClient = ChatClient.create(tripAgentChatModel);
+  public TripAgentWorkflow(ComponentClient componentClient) {
     this.componentClient = componentClient;
   }
 
@@ -39,9 +34,11 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
         step("search-flights")
             .call(String.class, this::findFlights)
             .andThen(
-                FlightAPIResponseList.class,
-                flights -> {
-                  List<Flight> domainFlights = FlightMapper.mapFlights(flights.flights);
+                FlightSearchAgent.FlightAPIResponseList.class,
+                response -> {
+                    System.out.println("################### got this:" + response);
+                  List<Flight> domainFlights = FlightMapper.mapFlights(response.flights());
+
                   storeFlights(domainFlights);
                   return effects()
                       .updateState(currentState().withFlights(domainFlights))
@@ -54,10 +51,10 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
         step("search-accommodations")
             .call(String.class, this::findAccommodations)
             .andThen(
-                AccommodationAPIResponseList.class,
-                accommodations -> {
+                AccommodationSearchAgent.AccommodationAPIResponseList.class,
+                    response -> {
                   List<Accommodation> domainAccommodations =
-                      AccommodationMapper.mapAccommodations(accommodations.accommodations);
+                      AccommodationMapper.mapAccommodations(response.accommodations());
                   storeAccommodations(domainAccommodations);
                   return effects()
                       .updateState(currentState().withAccommodations(domainAccommodations))
@@ -135,19 +132,15 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
                 + commandContext().workflowId());
   }
 
-  private FlightAPIResponseList findFlights(String userRequest) {
+  private FlightSearchAgent.FlightAPIResponseList findFlights(String userRequest) {
     log.info("looking for flights");
-    return chatClient
-        .prompt(
-            String.format(
+    return componentClient.forAgent().inSession("TODO-change").method(FlightSearchAgent::findFlights)
+            .invoke( String.format(
                 """
                    find ONLY flights within the following constraints %s. Ignore any constraints that don't refer flights
                    If some error shows in the tool you are using do not provide any flights.
                    """,
-                userRequest))
-        .tools(FlightBookingAPITool.getMethodToolCallback("findFlights"))
-        .call()
-        .entity(FlightAPIResponseList.class);
+                userRequest));
   }
 
   private void storeFlights(List<Flight> chatResponseFlights) {
@@ -161,19 +154,15 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
         });
   }
 
-  private AccommodationAPIResponseList findAccommodations(String question) {
+  private AccommodationSearchAgent.AccommodationAPIResponseList findAccommodations(String question) {
     log.info("looking for accommodations");
-    return chatClient
-        .prompt(
+    return componentClient.forAgent().inSession("TODO-change").method(AccommodationSearchAgent::findAccommodations).invoke(
             String.format(
                 """
                    find ONLY accommodations within the following constraints %s. Ignore any constraints that don't refer accommodations
                    If some error shows in the tool you are using do not provide any accommodations.
                    """,
-                question))
-        .tools(AccommodationBookingAPITool.getMethodToolCallback("findAccommodations"))
-        .call()
-        .entity(AccommodationAPIResponseList.class);
+                question));
   }
 
   private void storeAccommodations(List<Accommodation> chatResponseAccommodations) {
@@ -191,28 +180,32 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
       String request, List<Flight> flights, List<Accommodation> accommodations) {
     log.info("sending mail");
     String responseMail =
-        chatClient
-            .prompt(
-                String.format(
+            componentClient.forAgent().inSession("TODO-change").method(MailSenderAgent::sendMail).invoke(
+                    String.format(
                     """
                        You are allowed to use the @tool function only once in this conversation. Do not use it more than once, even if more information becomes available
                        Send an email to the email provided in %s, using the requestId provide in %s and the content from %s and %s. The content has flights and accommodations
                        Add in the email a recommendation with the best value combination flight (outbound and return) and accommodation
                        parse the whole content as HTML before sending
                        """,
-                    request, request, flights, accommodations))
-            .tools(new EmailAPITool())
-            .call()
-            .content();
+                    request, request, flights, accommodations)
+            );
+//        chatClient
+//            .prompt(
+//                String.format(
+//                    """
+//                       You are allowed to use the @tool function only once in this conversation. Do not use it more than once, even if more information becomes available
+//                       Send an email to the email provided in %s, using the requestId provide in %s and the content from %s and %s. The content has flights and accommodations
+//                       Add in the email a recommendation with the best value combination flight (outbound and return) and accommodation
+//                       parse the whole content as HTML before sending
+//                       """,
+//                    request, request, flights, accommodations))
+//            .tools(new EmailAPITool())
+//            .call()
+//            .content();
     log.debug(String.format("responseMail %s", responseMail));
     return true;
   }
 
-  private record AccommodationAPIResponseList(List<AccommodationAPIResponse> accommodations) {}
 
-  private record FlightAPIResponseList(List<FlightAPIResponse> flights) {
-    static FlightAPIResponseList empty() {
-      return new FlightAPIResponseList(List.of());
-    }
-  }
 }

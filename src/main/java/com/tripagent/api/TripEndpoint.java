@@ -27,7 +27,7 @@ public class TripEndpoint {
   private final ComponentClient componentClient;
   private static final Logger log = LoggerFactory.getLogger(TripEndpoint.class);
 
-  public TripEndpoint(ComponentClient componentClient, TripAgentChatModel tripAgentChatModel) {
+  public TripEndpoint(ComponentClient componentClient) {
     this.componentClient = componentClient;
   }
 
@@ -68,8 +68,8 @@ public class TripEndpoint {
       String flightRef,
       String from,
       String to,
-      ZonedDateTime departure,
-      ZonedDateTime arrival,
+      String departure,
+      String arrival,
       int price,
       Status status) {
     static FlightBookingResponse transform(Flight domainFlight) {
