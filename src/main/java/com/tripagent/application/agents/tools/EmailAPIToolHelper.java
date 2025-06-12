@@ -1,7 +1,6 @@
 package com.tripagent.application.agents.tools;
 
 import java.util.Properties;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.Session;
@@ -38,14 +37,14 @@ public class EmailAPIToolHelper {
       return false;
     }
     try {
-        MimeMessage message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(from));
-        message.setRecipients(MimeMessage.RecipientType.TO, InternetAddress.parse(to));
-        message.setSubject(subject);
-        message.setContent(content, "text/html;charset=utf-8");
-        Transport.send(message);
-        log.info("Email sent");
-        return true;
+      MimeMessage message = new MimeMessage(session);
+      message.setFrom(new InternetAddress(from));
+      message.setRecipients(MimeMessage.RecipientType.TO, InternetAddress.parse(to));
+      message.setSubject(subject);
+      message.setContent(content, "text/html;charset=utf-8");
+      Transport.send(message);
+      log.info("Email sent");
+      return true;
     } catch (MessagingException e) {
       log.error(e.getMessage());
       throw new RuntimeException(e);
