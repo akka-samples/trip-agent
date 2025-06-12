@@ -14,7 +14,7 @@ public class FlightSearchAgent extends Agent {
   private static final String SYSTEM_MESSAGE =
       """
             You are a flight search agent in charge of looking for flights
-            that accommodate user requirements.
+            that are between the boundaries of user requirements.
             Your response should follow a json schema like the following:
             { "flights: [
             {

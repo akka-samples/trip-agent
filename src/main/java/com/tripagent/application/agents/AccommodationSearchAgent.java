@@ -13,11 +13,9 @@ public class AccommodationSearchAgent extends Agent {
 
   private static final String SYSTEM_MESSAGE =
       """
-            You are a search accommodations agent in charge of looking for  accommodations,
-            find ONLY accommodations within the following constraints %s. Ignore any constraints that don't refer accommodations
-            If some error shows in the tool you are using do not provide any accommodations.
-
-            Your response should follow a strict json schema like the following:
+            You are a accommodations search agent in charge of looking for accommodations
+            that are between the boundaries of user requirements.
+            Your response should follow a json schema like the following:
             { "accommodations":
                [
                          {
