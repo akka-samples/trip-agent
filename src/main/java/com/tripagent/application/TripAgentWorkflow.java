@@ -130,7 +130,7 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
         .updateState(initialState)
         .transitionTo("search-flights", userRequest)
         .thenReply(
-            "We are processing your Request. We'll send you the response to your email in a minute. Your process id is: "
+            "We are processing your Request. We'll send you the response to your email in a minute. Your request id is: "
                 + commandContext().workflowId());
   }
 
