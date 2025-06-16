@@ -1,6 +1,7 @@
 package com.tripagent.application.agents;
 
 import java.io.InputStream;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import akka.javasdk.agent.Agent;
@@ -36,9 +37,9 @@ public class AccommodationSearchAgent extends Agent {
                          }
                          ...
             }
-
             Do not include any explanations or text outside of the JSON structure.
-            Do include as many accommodations as possible.
+            If no accommodations are found then your response must be:
+            { "accommodations":[] }
             """
           .stripIndent();
 
@@ -50,11 +51,34 @@ public class AccommodationSearchAgent extends Agent {
         .thenReply();
   }
 
-  @FunctionTool(name = "find-accommodations", description = "finds accommodations")
-  private List<AccommodationAPIResponse> findAccommodationsTool() {
-    // If the accommodations results weren't fake you should add params
+  @FunctionTool(
+      name = "find-accommodations",
+      description =
+          "Finds available accommodations for the given check-in and check-out dates. Format of the dates must be `2026-05-07T15:00:00Z`")
+  private List<AccommodationAPIResponse> findAccommodationsTool(String checkin, String checkout) {
+    ZonedDateTime checkinDate = ZonedDateTime.parse(checkin);
+    ZonedDateTime checkoutDate = ZonedDateTime.parse(checkout);
+
     InputStream in = getClass().getClassLoader().getResourceAsStream("accommodations.json");
-    return AccommodationAPIResponse.extract(in);
+    List<AccommodationAPIResponse> found = AccommodationAPIResponse.extract(in);
+    return found.stream()
+        .filter(
+            accmm ->
+                (accmm.availableFrom().isEqual(checkinDate)
+                        || accmm.availableFrom().isBefore(checkinDate))
+                    && (accmm.availableUntil().isEqual(checkoutDate)
+                        || accmm.availableUntil().isAfter(checkoutDate)))
+        .map(
+            each -> {
+              return new AccommodationAPIResponse(
+                  each.id(),
+                  each.name(),
+                  each.neighborhood(),
+                  checkinDate,
+                  checkoutDate,
+                  each.pricePerNight());
+            })
+        .toList();
   }
 
   public record AccommodationAPIResponseList(List<AccommodationAPIResponse> accommodations) {}

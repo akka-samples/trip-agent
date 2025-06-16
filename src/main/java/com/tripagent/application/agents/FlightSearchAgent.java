@@ -1,6 +1,7 @@
 package com.tripagent.application.agents;
 
 import java.io.InputStream;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import akka.javasdk.agent.Agent;
@@ -36,7 +37,8 @@ public class FlightSearchAgent extends Agent {
                     ...
             ]}
             Do not include any explanations or text outside of the JSON structure.
-            Do include as many flights as possible.
+            If no flights are found then your response must be:
+            { "flights":[] }
             """
           .stripIndent();
 
@@ -48,16 +50,24 @@ public class FlightSearchAgent extends Agent {
         .thenReply();
   }
 
-  @FunctionTool(name = "find-flights", description = "finds flights")
-  private List<FlightAPIResponse> findFlightsTool() {
-    // If the flight results weren't fake you should add params
+  @FunctionTool(
+      name = "find-flights",
+      description =
+          "Finds available flights for the given outbound and return dates. Format of the dates must be `2026-05-07T15:00:00Z`")
+  private List<FlightAPIResponse> findFlightsTool(String outbound, String returnDate) {
+    ZonedDateTime outboundParam = ZonedDateTime.parse(outbound);
+    ZonedDateTime returnLegParam = ZonedDateTime.parse(returnDate);
+
     InputStream in = getClass().getClassLoader().getResourceAsStream("flights.json");
-    return FlightAPIResponse.extract(in);
+    List<FlightAPIResponse> found = FlightAPIResponse.extract(in);
+    return found.stream()
+        .filter(
+            flight -> {
+              return flight.departure().toLocalDate().equals(outboundParam.toLocalDate())
+                  || flight.returnLeg().toLocalDate().equals(returnLegParam.toLocalDate());
+            })
+        .toList();
   }
 
-  public record FlightAPIResponseList(List<FlightAPIResponse> flights) {
-    static FlightAPIResponseList empty() {
-      return new FlightAPIResponseList(List.of());
-    }
-  }
+  public record FlightAPIResponseList(List<FlightAPIResponse> flights) {}
 }

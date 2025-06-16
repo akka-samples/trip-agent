@@ -11,7 +11,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public record FlightAPIResponse(
-    String id, String from, String to, ZonedDateTime departure, ZonedDateTime arrival, int price) {
+    String id,
+    String from,
+    String to,
+    ZonedDateTime departure,
+    ZonedDateTime returnLeg,
+    int price) {
 
   private static final Logger log = LoggerFactory.getLogger(FlightAPIResponse.class);
 

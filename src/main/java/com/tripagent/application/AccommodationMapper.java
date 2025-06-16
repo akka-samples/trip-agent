@@ -17,9 +17,9 @@ public class AccommodationMapper {
         a.id(),
         a.name(),
         a.neighborhood(),
-        a.checkin(),
-        a.checkout(),
-        a.pricepernight(),
+        a.availableFrom(),
+        a.availableUntil(),
+        a.pricePerNight(),
         Accommodation.Status.AVAILABLE);
   }
 }

@@ -13,6 +13,6 @@ public class FlightMapper {
 
   public static Flight mapFlight(FlightAPIResponse f) {
     return new Flight(
-        f.id(), f.from(), f.to(), f.departure(), f.arrival(), f.price(), Flight.Status.AVAILABLE);
+        f.id(), f.from(), f.to(), f.departure(), f.returnLeg(), f.price(), Flight.Status.AVAILABLE);
   }
 }
