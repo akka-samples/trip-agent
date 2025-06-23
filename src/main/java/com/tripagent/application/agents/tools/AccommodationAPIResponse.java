@@ -1,4 +1,4 @@
-package com.tripagent.ai.tools;
+package com.tripagent.application.agents.tools;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,13 +10,21 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @param id
+ * @param name
+ * @param neighborhood
+ * @param availableFrom
+ * @param availableUntil
+ * @param pricePerNight in dollars
+ */
 public record AccommodationAPIResponse(
     String id,
     String name,
     String neighborhood,
-    ZonedDateTime checkin,
-    ZonedDateTime checkout,
-    int pricepernight) {
+    ZonedDateTime availableFrom,
+    ZonedDateTime availableUntil,
+    int pricePerNight) {
 
   private static final Logger log = LoggerFactory.getLogger(AccommodationAPIResponse.class);
 

@@ -3,320 +3,320 @@
     "id": 1,
     "from": "Seoul",
     "to": "Tokyo",
-    "departure": "2025-05-06T07:00:00Z",
-    "arrival": "2025-05-06T09:30:00Z",
+    "departure": "2026-05-06T07:00:00Z",
+    "returnLeg": "2026-05-06T09:30:00Z",
     "price": 150
   },
   {
     "id": 2,
     "from": "Seoul",
     "to": "Tokyo",
-    "departure": "2025-05-06T09:15:00Z",
-    "arrival": "2025-05-06T11:45:00Z",
+    "departure": "2026-05-06T09:15:00Z",
+    "returnLeg": "2026-05-06T11:45:00Z",
     "price": 170
   },
   {
     "id": 3,
     "from": "Seoul",
     "to": "Tokyo",
-    "departure": "2025-05-06T10:00:00Z",
-    "arrival": "2025-05-06T12:30:00Z",
+    "departure": "2026-05-06T10:00:00Z",
+    "returnLeg": "2026-05-06T12:30:00Z",
     "price": 140
   },
   {
     "id": 4,
     "from": "Seoul",
     "to": "Tokyo",
-    "departure": "2025-05-06T11:45:00Z",
-    "arrival": "2025-05-06T14:10:00Z",
+    "departure": "2026-05-06T11:45:00Z",
+    "returnLeg": "2026-05-06T14:10:00Z",
     "price": 165
   },
   {
     "id": 5,
     "from": "Seoul",
     "to": "Tokyo",
-    "departure": "2025-05-06T13:30:00Z",
-    "arrival": "2025-05-06T16:00:00Z",
+    "departure": "2026-05-06T13:30:00Z",
+    "returnLeg": "2026-05-06T16:00:00Z",
     "price": 160
   },
   {
     "id": 6,
     "from": "Seoul",
     "to": "Tokyo",
-    "departure": "2025-05-06T14:15:00Z",
-    "arrival": "2025-05-06T16:40:00Z",
+    "departure": "2026-05-06T14:15:00Z",
+    "returnLeg": "2026-05-06T16:40:00Z",
     "price": 180
   },
   {
     "id": 7,
     "from": "Seoul",
     "to": "Tokyo",
-    "departure": "2025-05-06T15:45:00Z",
-    "arrival": "2025-05-06T18:10:00Z",
+    "departure": "2026-05-06T15:45:00Z",
+    "returnLeg": "2026-05-06T18:10:00Z",
     "price": 155
   },
   {
     "id": 8,
     "from": "Seoul",
     "to": "Tokyo",
-    "departure": "2025-05-06T17:00:00Z",
-    "arrival": "2025-05-06T19:30:00Z",
+    "departure": "2026-05-06T17:00:00Z",
+    "returnLeg": "2026-05-06T19:30:00Z",
     "price": 150
   },
   {
     "id": 9,
     "from": "Seoul",
     "to": "Tokyo",
-    "departure": "2025-05-06T18:30:00Z",
-    "arrival": "2025-05-06T21:00:00Z",
+    "departure": "2026-05-06T18:30:00Z",
+    "returnLeg": "2026-05-06T21:00:00Z",
     "price": 145
   },
   {
     "id": 10,
     "from": "Seoul",
     "to": "Tokyo",
-    "departure": "2025-05-06T20:00:00Z",
-    "arrival": "2025-05-06T22:25:00Z",
+    "departure": "2026-05-06T20:00:00Z",
+    "returnLeg": "2026-05-06T22:25:00Z",
     "price": 160
   },
   {
     "id": 11,
     "from": "Seoul",
     "to": "Tokyo",
-    "departure": "2025-05-07T06:30:00Z",
-    "arrival": "2025-05-07T08:55:00Z",
+    "departure": "2026-05-07T06:30:00Z",
+    "returnLeg": "2026-05-07T08:55:00Z",
     "price": 175
   },
   {
     "id": 12,
     "from": "Seoul",
     "to": "Tokyo",
-    "departure": "2025-05-07T08:00:00Z",
-    "arrival": "2025-05-07T10:25:00Z",
+    "departure": "2026-05-07T08:00:00Z",
+    "returnLeg": "2026-05-07T10:25:00Z",
     "price": 150
   },
   {
     "id": 13,
     "from": "Seoul",
     "to": "Tokyo",
-    "departure": "2025-05-07T09:45:00Z",
-    "arrival": "2025-05-07T12:10:00Z",
+    "departure": "2026-05-07T09:45:00Z",
+    "returnLeg": "2026-05-07T12:10:00Z",
     "price": 165
   },
   {
     "id": 14,
     "from": "Seoul",
     "to": "Tokyo",
-    "departure": "2025-05-07T11:00:00Z",
-    "arrival": "2025-05-07T13:30:00Z",
+    "departure": "2026-05-07T11:00:00Z",
+    "returnLeg": "2026-05-07T13:30:00Z",
     "price": 155
   },
   {
     "id": 15,
     "from": "Seoul",
     "to": "Tokyo",
-    "departure": "2025-05-07T12:30:00Z",
-    "arrival": "2025-05-07T15:00:00Z",
+    "departure": "2026-05-07T12:30:00Z",
+    "returnLeg": "2026-05-07T15:00:00Z",
     "price": 180
   },
   {
     "id": 16,
     "from": "Seoul",
     "to": "Tokyo",
-    "departure": "2025-05-07T14:00:00Z",
-    "arrival": "2025-05-07T16:30:00Z",
+    "departure": "2026-05-07T14:00:00Z",
+    "returnLeg": "2026-05-07T16:30:00Z",
     "price": 170
   },
   {
     "id": 17,
     "from": "Seoul",
     "to": "Tokyo",
-    "departure": "2025-05-07T15:30:00Z",
-    "arrival": "2025-05-07T18:00:00Z",
+    "departure": "2026-05-07T15:30:00Z",
+    "returnLeg": "2026-05-07T18:00:00Z",
     "price": 150
   },
   {
     "id": 18,
     "from": "Seoul",
     "to": "Tokyo",
-    "departure": "2025-05-07T17:00:00Z",
-    "arrival": "2025-05-07T19:25:00Z",
+    "departure": "2026-05-07T17:00:00Z",
+    "returnLeg": "2026-05-07T19:25:00Z",
     "price": 145
   },
   {
     "id": 19,
     "from": "Seoul",
     "to": "Tokyo",
-    "departure": "2025-05-07T18:45:00Z",
-    "arrival": "2025-05-07T21:10:00Z",
+    "departure": "2026-05-07T18:45:00Z",
+    "returnLeg": "2026-05-07T21:10:00Z",
     "price": 160
   },
   {
     "id": 20,
     "from": "Seoul",
     "to": "Tokyo",
-    "departure": "2025-05-07T20:15:00Z",
-    "arrival": "2025-05-07T22:40:00Z",
+    "departure": "2026-05-07T20:15:00Z",
+    "returnLeg": "2026-05-07T22:40:00Z",
     "price": 150
   },
     {
       "id": 21,
       "from": "Tokyo",
       "to": "Seoul",
-      "departure": "2025-05-13T07:00:00Z",
-      "arrival": "2025-05-13T09:30:00Z",
+      "departure": "2026-05-13T07:00:00Z",
+      "returnLeg": "2026-05-13T09:30:00Z",
       "price": 150
     },
     {
       "id": 22,
       "from": "Tokyo",
       "to": "Seoul",
-      "departure": "2025-05-13T09:15:00Z",
-      "arrival": "2025-05-13T11:45:00Z",
+      "departure": "2026-05-13T09:15:00Z",
+      "returnLeg": "2026-05-13T11:45:00Z",
       "price": 170
     },
     {
       "id": 23,
       "from": "Tokyo",
       "to": "Seoul",
-      "departure": "2025-05-13T10:00:00Z",
-      "arrival": "2025-05-13T12:30:00Z",
+      "departure": "2026-05-13T10:00:00Z",
+      "returnLeg": "2026-05-13T12:30:00Z",
       "price": 140
     },
     {
       "id": 24,
       "from": "Tokyo",
       "to": "Seoul",
-      "departure": "2025-05-13T11:45:00Z",
-      "arrival": "2025-05-13T14:10:00Z",
+      "departure": "2026-05-13T11:45:00Z",
+      "returnLeg": "2026-05-13T14:10:00Z",
       "price": 165
     },
     {
       "id": 25,
       "from": "Tokyo",
       "to": "Seoul",
-      "departure": "2025-05-13T13:30:00Z",
-      "arrival": "2025-05-13T16:00:00Z",
+      "departure": "2026-05-13T13:30:00Z",
+      "returnLeg": "2026-05-13T16:00:00Z",
       "price": 160
     },
     {
       "id": 26,
       "from": "Tokyo",
       "to": "Seoul",
-      "departure": "2025-05-13T14:15:00Z",
-      "arrival": "2025-05-13T16:40:00Z",
+      "departure": "2026-05-13T14:15:00Z",
+      "returnLeg": "2026-05-13T16:40:00Z",
       "price": 180
     },
     {
       "id": 27,
       "from": "Tokyo",
       "to": "Seoul",
-      "departure": "2025-05-13T15:45:00Z",
-      "arrival": "2025-05-13T18:10:00Z",
+      "departure": "2026-05-13T15:45:00Z",
+      "returnLeg": "2026-05-13T18:10:00Z",
       "price": 155
     },
     {
       "id": 28,
       "from": "Tokyo",
       "to": "Seoul",
-      "departure": "2025-05-13T17:00:00Z",
-      "arrival": "2025-05-13T19:30:00Z",
+      "departure": "2026-05-13T17:00:00Z",
+      "returnLeg": "2026-05-13T19:30:00Z",
       "price": 150
     },
     {
       "id": 29,
       "from": "Tokyo",
       "to": "Seoul",
-      "departure": "2025-05-13T18:30:00Z",
-      "arrival": "2025-05-13T21:00:00Z",
+      "departure": "2026-05-13T18:30:00Z",
+      "returnLeg": "2026-05-13T21:00:00Z",
       "price": 145
     },
     {
       "id": 30,
       "from": "Tokyo",
       "to": "Seoul",
-      "departure": "2025-05-13T20:00:00Z",
-      "arrival": "2025-05-13T22:25:00Z",
+      "departure": "2026-05-13T20:00:00Z",
+      "returnLeg": "2026-05-13T22:25:00Z",
       "price": 160
     },
     {
       "id": 31,
       "from": "Tokyo",
       "to": "Seoul",
-      "departure": "2025-05-14T06:30:00Z",
-      "arrival": "2025-05-14T08:55:00Z",
+      "departure": "2026-05-14T06:30:00Z",
+      "returnLeg": "2026-05-14T08:55:00Z",
       "price": 175
     },
     {
       "id": 32,
       "from": "Tokyo",
       "to": "Seoul",
-      "departure": "2025-05-14T08:00:00Z",
-      "arrival": "2025-05-14T10:25:00Z",
+      "departure": "2026-05-14T08:00:00Z",
+      "returnLeg": "2026-05-14T10:25:00Z",
       "price": 150
     },
     {
       "id": 33,
       "from": "Tokyo",
       "to": "Seoul",
-      "departure": "2025-05-14T09:45:00Z",
-      "arrival": "2025-05-14T12:10:00Z",
+      "departure": "2026-05-14T09:45:00Z",
+      "returnLeg": "2026-05-14T12:10:00Z",
       "price": 165
     },
     {
       "id": 34,
       "from": "Tokyo",
       "to": "Seoul",
-      "departure": "2025-05-14T11:00:00Z",
-      "arrival": "2025-05-14T13:30:00Z",
+      "departure": "2026-05-14T11:00:00Z",
+      "returnLeg": "2026-05-14T13:30:00Z",
       "price": 155
     },
     {
       "id": 35,
       "from": "Tokyo",
       "to": "Seoul",
-      "departure": "2025-05-14T12:30:00Z",
-      "arrival": "2025-05-14T15:00:00Z",
+      "departure": "2026-05-14T12:30:00Z",
+      "returnLeg": "2026-05-14T15:00:00Z",
       "price": 180
     },
     {
       "id": 36,
       "from": "Tokyo",
       "to": "Seoul",
-      "departure": "2025-05-14T14:00:00Z",
-      "arrival": "2025-05-14T16:30:00Z",
+      "departure": "2026-05-14T14:00:00Z",
+      "returnLeg": "2026-05-14T16:30:00Z",
       "price": 170
     },
     {
       "id": 37,
       "from": "Tokyo",
       "to": "Seoul",
-      "departure": "2025-05-14T15:30:00Z",
-      "arrival": "2025-05-14T18:00:00Z",
+      "departure": "2026-05-14T15:30:00Z",
+      "returnLeg": "2026-05-14T18:00:00Z",
       "price": 150
     },
     {
       "id": 38,
       "from": "Tokyo",
       "to": "Seoul",
-      "departure": "2025-05-14T17:00:00Z",
-      "arrival": "2025-05-14T19:25:00Z",
+      "departure": "2026-05-14T17:00:00Z",
+      "returnLeg": "2026-05-14T19:25:00Z",
       "price": 145
     },
     {
       "id": 39,
       "from": "Tokyo",
       "to": "Seoul",
-      "departure": "2025-05-14T18:45:00Z",
-      "arrival": "2025-05-14T21:10:00Z",
+      "departure": "2026-05-14T18:45:00Z",
+      "returnLeg": "2026-05-14T21:10:00Z",
       "price": 160
     },
     {
       "id": 40,
       "from": "Tokyo",
       "to": "Seoul",
-      "departure": "2025-05-14T20:15:00Z",
-      "arrival": "2025-05-14T22:40:00Z",
+      "departure": "2026-05-14T20:15:00Z",
+      "returnLeg": "2026-05-14T22:40:00Z",
       "price": 150
     }
   ]

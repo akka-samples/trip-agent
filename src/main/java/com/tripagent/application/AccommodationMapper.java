@@ -2,7 +2,7 @@ package com.tripagent.application;
 
 import java.util.List;
 
-import com.tripagent.ai.tools.AccommodationAPIResponse;
+import com.tripagent.application.agents.tools.AccommodationAPIResponse;
 import com.tripagent.domain.Accommodation;
 
 public class AccommodationMapper {
@@ -17,9 +17,9 @@ public class AccommodationMapper {
         a.id(),
         a.name(),
         a.neighborhood(),
-        a.checkin(),
-        a.checkout(),
-        a.pricepernight(),
+        a.availableFrom(),
+        a.availableUntil(),
+        a.pricePerNight(),
         Accommodation.Status.AVAILABLE);
   }
 }
