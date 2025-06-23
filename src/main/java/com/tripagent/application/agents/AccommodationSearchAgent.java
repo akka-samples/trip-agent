@@ -25,7 +25,7 @@ public class AccommodationSearchAgent extends Agent {
                            "neighborhood": "Shinjuku",
                            "checkin": "2026-05-07T15:00:00Z",
                            "checkout": "2026-05-14T11:00:00Z",
-                           "pricepernight": 120
+                           "pricePerNight": 120
                          },
                          {
                            "id": 102,
@@ -33,7 +33,7 @@ public class AccommodationSearchAgent extends Agent {
                            "neighborhood": "Asakusa",
                            "checkin": "2026-05-07T15:00:00Z",
                            "checkout": "2026-05-14T11:00:00Z",
-                           "pricepernight": 85
+                           "pricePerNight": 85
                          }
                          ...
             }

@@ -5,7 +5,7 @@
     "neighborhood": "Shinjuku",
     "availableFrom": "2026-05-07T15:00:00Z",
     "availableUntil": "2026-05-14T11:00:00Z",
-    "pricepernight": 120
+    "pricePerNight": 120
   },
   {
     "id": 102,
@@ -13,7 +13,7 @@
     "neighborhood": "Asakusa",
     "availableFrom": "2026-05-07T15:00:00Z",
     "availableUntil": "2026-05-14T11:00:00Z",
-    "pricepernight": 85
+    "pricePerNight": 85
   },
   {
     "id": 103,
@@ -21,7 +21,7 @@
     "neighborhood": "Ginza",
     "availableFrom": "2026-05-07T15:00:00Z",
     "availableUntil": "2026-05-14T11:00:00Z",
-    "pricepernight": 160
+    "pricePerNight": 160
   },
   {
     "id": 104,
@@ -29,7 +29,7 @@
     "neighborhood": "Harajuku",
     "availableFrom": "2026-05-07T15:00:00Z",
     "availableUntil": "2026-05-14T11:00:00Z",
-    "pricepernight": 140
+    "pricePerNight": 140
   },
   {
     "id": 105,
@@ -37,7 +37,7 @@
     "neighborhood": "Shibuya",
     "availableFrom": "2026-05-07T15:00:00Z",
     "availableUntil": "2026-05-14T11:00:00Z",
-    "pricepernight": 60
+    "pricePerNight": 60
   },
   {
     "id": 106,
@@ -45,7 +45,7 @@
     "neighborhood": "Ueno",
     "availableFrom": "2026-05-07T15:00:00Z",
     "availableUntil": "2026-05-14T11:00:00Z",
-    "pricepernight": 90
+    "pricePerNight": 90
   },
   {
     "id": 107,
@@ -53,7 +53,7 @@
     "neighborhood": "Akihabara",
     "availableFrom": "2026-05-07T15:00:00Z",
     "availableUntil": "2026-05-14T11:00:00Z",
-    "pricepernight": 110
+    "pricePerNight": 110
   },
   {
     "id": 108,
@@ -61,7 +61,7 @@
     "neighborhood": "Roppongi",
     "availableFrom": "2026-05-07T15:00:00Z",
     "availableUntil": "2026-05-14T11:00:00Z",
-    "pricepernight": 175
+    "pricePerNight": 175
   },
   {
     "id": 109,
@@ -69,7 +69,7 @@
     "neighborhood": "Ikebukuro",
     "availableFrom": "2026-05-07T15:00:00Z",
     "availableUntil": "2026-05-14T11:00:00Z",
-    "pricepernight": 95
+    "pricePerNight": 95
   },
   {
     "id": 110,
@@ -77,7 +77,7 @@
     "neighborhood": "Meguro",
     "availableFrom": "2026-05-07T15:00:00Z",
     "availableUntil": "2026-05-14T11:00:00Z",
-    "pricepernight": 130
+    "pricePerNight": 130
   },
   {
     "id": 111,
@@ -85,7 +85,7 @@
     "neighborhood": "Kagurazaka",
     "availableFrom": "2026-05-07T15:00:00Z",
     "availableUntil": "2026-05-14T11:00:00Z",
-    "pricepernight": 145
+    "pricePerNight": 145
   },
   {
     "id": 112,
@@ -93,7 +93,7 @@
     "neighborhood": "Kichijoji",
     "availableFrom": "2026-05-07T15:00:00Z",
     "availableUntil": "2026-05-14T11:00:00Z",
-    "pricepernight": 100
+    "pricePerNight": 100
   },
   {
     "id": 113,
@@ -101,7 +101,7 @@
     "neighborhood": "Nihonbashi",
     "availableFrom": "2026-05-07T15:00:00Z",
     "availableUntil": "2026-05-14T11:00:00Z",
-    "pricepernight": 155
+    "pricePerNight": 155
   },
   {
     "id": 114,
@@ -109,7 +109,7 @@
     "neighborhood": "Odaiba",
     "availableFrom": "2026-05-07T15:00:00Z",
     "availableUntil": "2026-05-14T11:00:00Z",
-    "pricepernight": 180
+    "pricePerNight": 180
   },
   {
     "id": 115,
@@ -117,7 +117,7 @@
     "neighborhood": "Tsukiji",
     "availableFrom": "2026-05-07T15:00:00Z",
     "availableUntil": "2026-05-14T11:00:00Z",
-    "pricepernight": 105
+    "pricePerNight": 105
   },
   {
     "id": 116,
@@ -125,7 +125,7 @@
     "neighborhood": "Ebisu",
     "availableFrom": "2026-05-07T15:00:00Z",
     "availableUntil": "2026-05-14T11:00:00Z",
-    "pricepernight": 125
+    "pricePerNight": 125
   },
   {
     "id": 117,
@@ -133,7 +133,7 @@
     "neighborhood": "Koenji",
     "availableFrom": "2026-05-07T15:00:00Z",
     "availableUntil": "2026-05-14T11:00:00Z",
-    "pricepernight": 80
+    "pricePerNight": 80
   },
   {
     "id": 118,
@@ -141,7 +141,7 @@
     "neighborhood": "Shimokitazawa",
     "availableFrom": "2026-05-07T15:00:00Z",
     "availableUntil": "2026-05-14T11:00:00Z",
-    "pricepernight": 115
+    "pricePerNight": 115
   },
   {
     "id": 119,
@@ -149,7 +149,7 @@
     "neighborhood": "Yanaka",
     "availableFrom": "2026-05-07T15:00:00Z",
     "availableUntil": "2026-05-14T11:00:00Z",
-    "pricepernight": 98
+    "pricePerNight": 98
   },
   {
     "id": 120,
@@ -157,5 +157,5 @@
     "neighborhood": "Daikanyama",
     "availableFrom": "2026-05-07T15:00:00Z",
     "availableUntil": "2026-05-14T11:00:00Z",
-    "pricepernight": 135
+    "pricePerNight": 135
   }]

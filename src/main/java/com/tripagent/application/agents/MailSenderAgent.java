@@ -14,7 +14,7 @@ public class MailSenderAgent extends Agent {
             You are allowed to use the tool function only once in this conversation. Do not use it more than once, even if more information becomes available
             Send an email to the email provided in user request. The content has flights and accommodations
             Add in the email a recommendation with the best value combination flight (outbound and return) and accommodation
-            parse the whole content as HTML before sending
+            parse the whole content as HTML before sending, with some nice css if possible.
             """
           .stripIndent();
 

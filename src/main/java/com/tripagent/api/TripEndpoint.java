@@ -105,7 +105,7 @@ public class TripEndpoint {
       String neighborhood,
       ZonedDateTime checkin,
       ZonedDateTime checkout,
-      int pricepernight,
+      int pricePerNight,
       Status status) {
     static AccommodationBookingResponse transform(Accommodation domainAccommodation) {
       Status status = Status.AVAILABLE;
@@ -118,7 +118,7 @@ public class TripEndpoint {
           domainAccommodation.neighborhood(),
           domainAccommodation.checkin(),
           domainAccommodation.checkout(),
-          domainAccommodation.pricepernight(),
+          domainAccommodation.pricePerNight(),
           status);
     }
   }

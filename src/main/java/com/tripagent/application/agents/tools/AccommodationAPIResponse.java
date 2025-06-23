@@ -10,6 +10,14 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * @param id
+ * @param name
+ * @param neighborhood
+ * @param availableFrom
+ * @param availableUntil
+ * @param pricePerNight in dollars
+ */
 public record AccommodationAPIResponse(
     String id,
     String name,

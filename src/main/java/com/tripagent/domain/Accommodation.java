@@ -8,11 +8,11 @@ public record Accommodation(
     String neighborhood,
     ZonedDateTime checkin,
     ZonedDateTime checkout,
-    int pricepernight,
+    int pricePerNight,
     Status status) {
 
   public Accommodation withStatus(Status status) {
-    return new Accommodation(id, name, neighborhood, checkin, checkout, pricepernight, status);
+    return new Accommodation(id, name, neighborhood, checkin, checkout, pricePerNight, status);
   }
 
   public enum Status {
