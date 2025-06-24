@@ -85,7 +85,7 @@ curl http://localhost:9000/trip/accommodation/117
 
 ## Running in Akka infra 
 First you need to [deploy](https://doc.akka.io/operations/services/deploy-service.html) the service 
-To send emails after deploying this app in the Akka infrastructure, you need to [set the env vars](https://github.com/akka-samples/ask-akka-agent/blob/main/src/main/resources/flat-doc/secrets.md):
+To send emails after deploying this app in the Akka infrastructure, you need to [set the env vars](https://doc.akka.io/operations/projects/secrets.html#_set_secrets_as_environment_variables_for_a_service):
 ```shell
 SMTP_HOST
 SMTP_PORT
