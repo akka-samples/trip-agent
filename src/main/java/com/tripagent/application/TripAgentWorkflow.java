@@ -1,13 +1,7 @@
 package com.tripagent.application;
 
-import java.time.Duration;
-import java.util.List;
-import java.util.Optional;
-
-import static com.tripagent.domain.TripSearchState.StatusTag.*;
-
-import akka.Done;
 import akka.javasdk.annotations.ComponentId;
+import akka.javasdk.annotations.StepName;
 import akka.javasdk.client.ComponentClient;
 import akka.javasdk.workflow.Workflow;
 import com.tripagent.application.agents.AccommodationSearchAgent;
@@ -18,6 +12,14 @@ import com.tripagent.domain.Flight;
 import com.tripagent.domain.TripSearchState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
+import java.util.Optional;
+
+import static com.tripagent.domain.TripSearchState.StatusTag.FAILED;
+import static com.tripagent.domain.TripSearchState.StatusTag.STARTED;
+import static com.tripagent.domain.TripSearchState.StatusTag.SUCCESSFULLY_FINISHED;
+import static java.time.Duration.ofSeconds;
 
 @ComponentId("trip-agent")
 public class TripAgentWorkflow extends Workflow<TripSearchState> {
@@ -31,87 +33,69 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
   }
 
   @Override
-  public WorkflowDef<TripSearchState> definition() {
-    // Step 1 look for flights
-    Step searchFlights =
-        step("search-flights")
-            .call(String.class, this::findFlights)
-            .andThen(
-                FlightSearchAgent.FlightAPIResponseList.class,
-                response -> {
-                  List<Flight> domainFlights = FlightMapper.mapFlights(response.flights());
+  public WorkflowSettings settings() {
+    return WorkflowSettings.builder()
+      .defaultStepRecovery(maxRetries(0).failoverTo(TripAgentWorkflow::errorHandlerStep))
+      .stepTimeout(TripAgentWorkflow::searchFlightsStep, ofSeconds(60))
+      .stepTimeout(TripAgentWorkflow::searchAccommodationsStep, ofSeconds(60))
+      .stepTimeout(TripAgentWorkflow::sendEmailStep, ofSeconds(90))
+      .build();
+  }
 
-                  storeFlights(domainFlights);
-                  return effects()
-                      .updateState(currentState().withFlights(domainFlights))
-                      .transitionTo("search-accommodations", currentState().userRequest());
-                })
-            .timeout(Duration.ofSeconds(60));
 
-    // Step 2 look for accommodations
-    Step searchAccommodations =
-        step("search-accommodations")
-            .call(String.class, this::findAccommodations)
-            .andThen(
-                AccommodationSearchAgent.AccommodationAPIResponseList.class,
-                response -> {
-                  List<Accommodation> domainAccommodations =
-                      AccommodationMapper.mapAccommodations(response.accommodations());
-                  storeAccommodations(domainAccommodations);
-                  return effects()
-                      .updateState(currentState().withAccommodations(domainAccommodations))
-                      .transitionTo("send-mail");
-                })
-            .timeout(Duration.ofSeconds(60));
+  // Step 1 look for flights
+  @StepName("search-flights")
+  private StepEffect searchFlightsStep(String userRequest) {
 
-    // Step 3 send mail
-    Step sendMail =
-        step("send-mail")
-            .call(
-                String.class,
-                request -> {
-                  return sendMail(
-                      currentState().userRequest(),
-                      currentState().trip().flights(),
-                      currentState().trip().accommodations());
-                })
-            .andThen(
-                Boolean.class,
-                __ -> {
-                  return effects()
-                      .updateState(
-                          currentState()
-                              .withRequestStatus(
-                                  new TripSearchState.RequestStatus(SUCCESSFULLY_FINISHED)))
-                      .end();
-                })
-            .timeout(Duration.ofSeconds(90));
+    var response = findFlights(userRequest);
+    List<Flight> flights = FlightMapper.mapFlights(response.flights());
+    storeFlights(flights);
 
-    Step errorHandler =
-        step("error-handler")
-            .call(
-                Exception.class,
-                ex -> {
-                  log.error("Trip request failed. Current state {}", currentState());
-                  return Done.done();
-                })
-            .andThen(
-                Done.class,
-                __ ->
-                    effects()
-                        .updateState(
-                            currentState()
-                                .withRequestStatus(new TripSearchState.RequestStatus(FAILED)))
-                        .end());
+    return stepEffects()
+      .updateState(currentState().withFlights(flights))
+      .thenTransitionTo(TripAgentWorkflow::searchAccommodationsStep)
+      .withInput(currentState().userRequest());
+  }
 
-    // Step 3 deal with errors
-    return workflow()
-        .failoverTo("error-handler", maxRetries(0))
-        .defaultStepRecoverStrategy(maxRetries(0).failoverTo("error-handler"))
-        .addStep(searchFlights)
-        .addStep(searchAccommodations)
-        .addStep(sendMail)
-        .addStep(errorHandler);
+  // Step 2 look for accommodations
+  @StepName("search-accommodations")
+  private StepEffect searchAccommodationsStep(String question) {
+    var response = findAccommodations(question);
+
+    List<Accommodation> accommodations =
+      AccommodationMapper.mapAccommodations(response.accommodations());
+    storeAccommodations(accommodations);
+
+    return stepEffects()
+      .updateState(currentState().withAccommodations(accommodations))
+      .thenTransitionTo(TripAgentWorkflow::sendEmailStep);
+  }
+
+  // Step 3 send mail
+  @StepName("send-email")
+  private StepEffect sendEmailStep() {
+    sendMail(
+      currentState().userRequest(),
+      currentState().trip().flights(),
+      currentState().trip().accommodations());
+
+    return stepEffects()
+      .updateState(
+        currentState()
+          .withRequestStatus(new TripSearchState.RequestStatus(SUCCESSFULLY_FINISHED)))
+      .thenEnd();
+  }
+
+  // Step 4 deal with errors
+  @StepName("error-handler")
+  private StepEffect errorHandlerStep() {
+    log.error("Trip request failed. Current state {}", currentState());
+
+    return stepEffects()
+      .updateState(
+        currentState()
+          .withRequestStatus(new TripSearchState.RequestStatus(FAILED)))
+      .thenEnd();
   }
 
   public ReadOnlyEffect<Optional<TripSearchState>> getState() {
@@ -128,7 +112,7 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
             userRequest, TripSearchState.Trip.empty(), new TripSearchState.RequestStatus(STARTED));
     return effects()
         .updateState(initialState)
-        .transitionTo("search-flights", userRequest)
+        .transitionTo(TripAgentWorkflow::searchFlightsStep).withInput(userRequest)
         .thenReply(
             "We are processing your Request. We'll send you the response to your email in a minute. Your request id is: "
                 + commandContext().workflowId());
@@ -187,7 +171,7 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
         });
   }
 
-  private boolean sendMail(
+  private void sendMail(
       String request, List<Flight> flights, List<Accommodation> accommodations) {
     log.info("sending mail");
     String responseMail =
@@ -205,7 +189,6 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
                        """,
                     request, request, flights, accommodations));
     log.debug(String.format("responseMail %s", responseMail));
-    return true;
   }
 
   private String sessionId() {
