@@ -108,86 +108,86 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
 
   public Effect<String> startSearch(String userRequest) {
     TripSearchState initialState =
-        new TripSearchState(
-            userRequest, TripSearchState.Trip.empty(), new TripSearchState.RequestStatus(STARTED));
+      new TripSearchState(
+        userRequest, TripSearchState.Trip.empty(), new TripSearchState.RequestStatus(STARTED));
     return effects()
-        .updateState(initialState)
-        .transitionTo(TripAgentWorkflow::searchFlightsStep).withInput(userRequest)
-        .thenReply(
-            "We are processing your Request. We'll send you the response to your email in a minute. Your request id is: "
-                + commandContext().workflowId());
+      .updateState(initialState)
+      .transitionTo(TripAgentWorkflow::searchFlightsStep).withInput(userRequest)
+      .thenReply(
+        "We are processing your Request. We'll send you the response to your email in a minute. Your request id is: "
+          + commandContext().workflowId());
   }
 
   private FlightSearchAgent.FlightAPIResponseList findFlights(String userRequest) {
     log.info("looking for flights");
     return componentClient
-        .forAgent()
-        .inSession(sessionId())
-        .method(FlightSearchAgent::findFlights)
-        .invoke(
-            String.format(
-                """
-                   find ONLY flights within the following constraints %s. Ignore any constraints that don't refer flights
-                   If some error shows in the tool you are using do not provide any flights.
-                   """,
-                userRequest));
+      .forAgent()
+      .inSession(sessionId())
+      .method(FlightSearchAgent::findFlights)
+      .invoke(
+        String.format(
+          """
+            find ONLY flights within the following constraints %s. Ignore any constraints that don't refer flights
+            If some error shows in the tool you are using do not provide any flights.
+            """,
+          userRequest));
   }
 
   private void storeFlights(List<Flight> chatResponseFlights) {
     // load flights into entities
     chatResponseFlights.forEach(
-        flight -> {
-          componentClient
-              .forEventSourcedEntity(flight.id())
-              .method(FlightBookingEntity::create)
-              .invoke(flight);
-        });
+      flight -> {
+        componentClient
+          .forEventSourcedEntity(flight.id())
+          .method(FlightBookingEntity::create)
+          .invoke(flight);
+      });
   }
 
   private AccommodationSearchAgent.AccommodationAPIResponseList findAccommodations(
-      String question) {
+    String question) {
     log.info("looking for accommodations");
     return componentClient
-        .forAgent()
-        .inSession(sessionId())
-        .method(AccommodationSearchAgent::findAccommodations)
-        .invoke(
-            String.format(
-                """
-                   find ONLY accommodations within the following constraints %s. Ignore any constraints that don't refer accommodations
-                   If some error shows in the tool you are using do not provide any accommodations.
-                   """,
-                question));
+      .forAgent()
+      .inSession(sessionId())
+      .method(AccommodationSearchAgent::findAccommodations)
+      .invoke(
+        String.format(
+          """
+            find ONLY accommodations within the following constraints %s. Ignore any constraints that don't refer accommodations
+            If some error shows in the tool you are using do not provide any accommodations.
+            """,
+          question));
   }
 
   private void storeAccommodations(List<Accommodation> chatResponseAccommodations) {
     // load accommodations into entities
     chatResponseAccommodations.forEach(
-        accommodation -> {
-          componentClient
-              .forEventSourcedEntity(accommodation.id())
-              .method(AccommodationBookingEntity::create)
-              .invoke(accommodation);
-        });
+      accommodation -> {
+        componentClient
+          .forEventSourcedEntity(accommodation.id())
+          .method(AccommodationBookingEntity::create)
+          .invoke(accommodation);
+      });
   }
 
   private void sendMail(
-      String request, List<Flight> flights, List<Accommodation> accommodations) {
+    String request, List<Flight> flights, List<Accommodation> accommodations) {
     log.info("sending mail");
     String responseMail =
-        componentClient
-            .forAgent()
-            .inSession(sessionId())
-            .method(MailSenderAgent::sendMail)
-            .invoke(
-                String.format(
-                    """
-                       You are allowed to use the @tool function only once in this conversation. Do not use it more than once, even if more information becomes available
-                       Send an email to the email provided in %s, using the requestId provide in %s and the content from %s and %s. The content has flights and accommodations
-                       Add in the email a recommendation with the best value combination flight (outbound and return) and accommodation
-                       parse the whole content as HTML before sending
-                       """,
-                    request, request, flights, accommodations));
+      componentClient
+        .forAgent()
+        .inSession(sessionId())
+        .method(MailSenderAgent::sendMail)
+        .invoke(
+          String.format(
+            """
+              You are allowed to use the @tool function only once in this conversation. Do not use it more than once, even if more information becomes available
+              Send an email to the email provided in %s, using the requestId provide in %s and the content from %s and %s. The content has flights and accommodations
+              Add in the email a recommendation with the best value combination flight (outbound and return) and accommodation
+              parse the whole content as HTML before sending
+              """,
+            request, request, flights, accommodations));
     log.debug(String.format("responseMail %s", responseMail));
   }
 
