@@ -16,7 +16,9 @@ public class FlightBookingEntity extends EventSourcedEntity<Flight, FlightEvent>
   public Effect<Done> create(Flight flight) {
     if (currentState() == null) {
       log.info("Loading flight {} into the system.", flight);
-      return effects().persist(new FlightEvent.FlightFound(flight)).thenReply(__ -> Done.done());
+      return effects()
+        .persist(new FlightEvent.FlightFound(flight))
+        .thenReply(__ -> Done.done());
     } else {
       log.warn("The flight {} is exists already.", flight);
       return effects().reply(Done.done());

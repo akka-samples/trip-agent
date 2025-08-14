@@ -1,5 +1,10 @@
 package com.tripagent.application;
 
+import static com.tripagent.domain.TripSearchState.StatusTag.FAILED;
+import static com.tripagent.domain.TripSearchState.StatusTag.STARTED;
+import static com.tripagent.domain.TripSearchState.StatusTag.SUCCESSFULLY_FINISHED;
+import static java.time.Duration.ofSeconds;
+
 import akka.javasdk.annotations.ComponentId;
 import akka.javasdk.annotations.StepName;
 import akka.javasdk.client.ComponentClient;
@@ -10,16 +15,10 @@ import com.tripagent.application.agents.MailSenderAgent;
 import com.tripagent.domain.Accommodation;
 import com.tripagent.domain.Flight;
 import com.tripagent.domain.TripSearchState;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.List;
 import java.util.Optional;
-
-import static com.tripagent.domain.TripSearchState.StatusTag.FAILED;
-import static com.tripagent.domain.TripSearchState.StatusTag.STARTED;
-import static com.tripagent.domain.TripSearchState.StatusTag.SUCCESSFULLY_FINISHED;
-import static java.time.Duration.ofSeconds;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @ComponentId("trip-agent")
 public class TripAgentWorkflow extends Workflow<TripSearchState> {
@@ -42,11 +41,9 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
       .build();
   }
 
-
   // Step 1 look for flights
   @StepName("search-flights")
   private StepEffect searchFlightsStep(String userRequest) {
-
     var response = findFlights(userRequest);
     List<Flight> flights = FlightMapper.mapFlights(response.flights());
     storeFlights(flights);
@@ -62,8 +59,9 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
   private StepEffect searchAccommodationsStep(String question) {
     var response = findAccommodations(question);
 
-    List<Accommodation> accommodations =
-      AccommodationMapper.mapAccommodations(response.accommodations());
+    List<Accommodation> accommodations = AccommodationMapper.mapAccommodations(
+      response.accommodations()
+    );
     storeAccommodations(accommodations);
 
     return stepEffects()
@@ -77,12 +75,14 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
     sendMail(
       currentState().userRequest(),
       currentState().trip().flights(),
-      currentState().trip().accommodations());
+      currentState().trip().accommodations()
+    );
 
     return stepEffects()
       .updateState(
         currentState()
-          .withRequestStatus(new TripSearchState.RequestStatus(SUCCESSFULLY_FINISHED)))
+          .withRequestStatus(new TripSearchState.RequestStatus(SUCCESSFULLY_FINISHED))
+      )
       .thenEnd();
   }
 
@@ -93,8 +93,8 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
 
     return stepEffects()
       .updateState(
-        currentState()
-          .withRequestStatus(new TripSearchState.RequestStatus(FAILED)))
+        currentState().withRequestStatus(new TripSearchState.RequestStatus(FAILED))
+      )
       .thenEnd();
   }
 
@@ -107,15 +107,19 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
   }
 
   public Effect<String> startSearch(String userRequest) {
-    TripSearchState initialState =
-      new TripSearchState(
-        userRequest, TripSearchState.Trip.empty(), new TripSearchState.RequestStatus(STARTED));
+    TripSearchState initialState = new TripSearchState(
+      userRequest,
+      TripSearchState.Trip.empty(),
+      new TripSearchState.RequestStatus(STARTED)
+    );
     return effects()
       .updateState(initialState)
-      .transitionTo(TripAgentWorkflow::searchFlightsStep).withInput(userRequest)
+      .transitionTo(TripAgentWorkflow::searchFlightsStep)
+      .withInput(userRequest)
       .thenReply(
-        "We are processing your Request. We'll send you the response to your email in a minute. Your request id is: "
-          + commandContext().workflowId());
+        "We are processing your Request. We'll send you the response to your email in a minute. Your request id is: " +
+        commandContext().workflowId()
+      );
   }
 
   private FlightSearchAgent.FlightAPIResponseList findFlights(String userRequest) {
@@ -127,25 +131,27 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
       .invoke(
         String.format(
           """
-            find ONLY flights within the following constraints %s. Ignore any constraints that don't refer flights
-            If some error shows in the tool you are using do not provide any flights.
-            """,
-          userRequest));
+          find ONLY flights within the following constraints %s. Ignore any constraints that don't refer flights
+          If some error shows in the tool you are using do not provide any flights.
+          """,
+          userRequest
+        )
+      );
   }
 
   private void storeFlights(List<Flight> chatResponseFlights) {
     // load flights into entities
-    chatResponseFlights.forEach(
-      flight -> {
-        componentClient
-          .forEventSourcedEntity(flight.id())
-          .method(FlightBookingEntity::create)
-          .invoke(flight);
-      });
+    chatResponseFlights.forEach(flight -> {
+      componentClient
+        .forEventSourcedEntity(flight.id())
+        .method(FlightBookingEntity::create)
+        .invoke(flight);
+    });
   }
 
   private AccommodationSearchAgent.AccommodationAPIResponseList findAccommodations(
-    String question) {
+    String question
+  ) {
     log.info("looking for accommodations");
     return componentClient
       .forAgent()
@@ -154,40 +160,48 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
       .invoke(
         String.format(
           """
-            find ONLY accommodations within the following constraints %s. Ignore any constraints that don't refer accommodations
-            If some error shows in the tool you are using do not provide any accommodations.
-            """,
-          question));
+          find ONLY accommodations within the following constraints %s. Ignore any constraints that don't refer accommodations
+          If some error shows in the tool you are using do not provide any accommodations.
+          """,
+          question
+        )
+      );
   }
 
   private void storeAccommodations(List<Accommodation> chatResponseAccommodations) {
     // load accommodations into entities
-    chatResponseAccommodations.forEach(
-      accommodation -> {
-        componentClient
-          .forEventSourcedEntity(accommodation.id())
-          .method(AccommodationBookingEntity::create)
-          .invoke(accommodation);
-      });
+    chatResponseAccommodations.forEach(accommodation -> {
+      componentClient
+        .forEventSourcedEntity(accommodation.id())
+        .method(AccommodationBookingEntity::create)
+        .invoke(accommodation);
+    });
   }
 
   private void sendMail(
-    String request, List<Flight> flights, List<Accommodation> accommodations) {
+    String request,
+    List<Flight> flights,
+    List<Accommodation> accommodations
+  ) {
     log.info("sending mail");
-    String responseMail =
-      componentClient
-        .forAgent()
-        .inSession(sessionId())
-        .method(MailSenderAgent::sendMail)
-        .invoke(
-          String.format(
-            """
-              You are allowed to use the @tool function only once in this conversation. Do not use it more than once, even if more information becomes available
-              Send an email to the email provided in %s, using the requestId provide in %s and the content from %s and %s. The content has flights and accommodations
-              Add in the email a recommendation with the best value combination flight (outbound and return) and accommodation
-              parse the whole content as HTML before sending
-              """,
-            request, request, flights, accommodations));
+    String responseMail = componentClient
+      .forAgent()
+      .inSession(sessionId())
+      .method(MailSenderAgent::sendMail)
+      .invoke(
+        String.format(
+          """
+          You are allowed to use the @tool function only once in this conversation. Do not use it more than once, even if more information becomes available
+          Send an email to the email provided in %s, using the requestId provide in %s and the content from %s and %s. The content has flights and accommodations
+          Add in the email a recommendation with the best value combination flight (outbound and return) and accommodation
+          parse the whole content as HTML before sending
+          """,
+          request,
+          request,
+          flights,
+          accommodations
+        )
+      );
     log.debug(String.format("responseMail %s", responseMail));
   }
 

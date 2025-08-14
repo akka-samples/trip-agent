@@ -6,15 +6,20 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public record TripSearchState(String userRequest, Trip trip, RequestStatus requestState) {
-
   public TripSearchState withFlights(List<Flight> flights) {
     return new TripSearchState(
-        userRequest, new Trip(flights, this.trip.accommodations), this.requestState);
+      userRequest,
+      new Trip(flights, this.trip.accommodations),
+      this.requestState
+    );
   }
 
   public TripSearchState withAccommodations(List<Accommodation> accommodations) {
     return new TripSearchState(
-        userRequest, new Trip(this.trip.flights, accommodations), this.requestState);
+      userRequest,
+      new Trip(this.trip.flights, accommodations),
+      this.requestState
+    );
   }
 
   public TripSearchState withRequestStatus(RequestStatus requestStatus) {
@@ -32,19 +37,20 @@ public record TripSearchState(String userRequest, Trip trip, RequestStatus reque
       this(tag, Optional.empty());
     }
   }
-  ;
-
   public enum StatusTag {
     STARTED,
     SUCCESSFULLY_FINISHED,
-    FAILED
+    FAILED,
   }
 
   public static boolean findEmail(String request) {
-    final Pattern EMAIL_PATTERN =
-        Pattern.compile("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}");
+    final Pattern EMAIL_PATTERN = Pattern.compile(
+      "[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}"
+    );
 
     Matcher matcher = EMAIL_PATTERN.matcher(request);
     return matcher.find();
   }
+
+
 }

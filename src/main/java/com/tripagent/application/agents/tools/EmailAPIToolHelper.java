@@ -1,12 +1,11 @@
 package com.tripagent.application.agents.tools;
 
-import java.util.Properties;
-
 import jakarta.mail.MessagingException;
 import jakarta.mail.Session;
 import jakarta.mail.Transport;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +25,10 @@ public class EmailAPIToolHelper {
     props.put("mail.smtp.host", smtpHostEnv != null ? smtpHostEnv : smtpHost);
     props.put("mail.smtp.port", smtpPortEnv != null ? smtpPortEnv : smtpPort);
     props.put("mail.smtp.auth", smtpAuthEnv != null ? smtpAuthEnv : "false");
-    props.put("mail.smtp.starttls.enable", smtpStartTLSEnv != null ? smtpStartTLSEnv : "false");
+    props.put(
+      "mail.smtp.starttls.enable",
+      smtpStartTLSEnv != null ? smtpStartTLSEnv : "false"
+    );
   }
 
   private static final Session session = Session.getInstance(props);
