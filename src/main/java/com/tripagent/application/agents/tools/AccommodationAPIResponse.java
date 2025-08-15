@@ -25,11 +25,9 @@ public record AccommodationAPIResponse(
     ZonedDateTime availableFrom,
     ZonedDateTime availableUntil,
     int pricePerNight) {
-
   private static final Logger log = LoggerFactory.getLogger(AccommodationAPIResponse.class);
 
   public static List<AccommodationAPIResponse> extract(InputStream json) {
-
     try {
       return JsonSupport.getObjectMapper()
           .readValue(json, new TypeReference<List<AccommodationAPIResponse>>() {});

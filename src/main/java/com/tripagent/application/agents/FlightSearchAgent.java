@@ -14,32 +14,32 @@ public class FlightSearchAgent extends Agent {
 
   private static final String SYSTEM_MESSAGE =
       """
-            You are a flight search agent in charge of looking for flights
-            that are between the boundaries of user requirements.
-            Your response should follow a json schema like the following:
-            { "flights: [
+    You are a flight search agent in charge of looking for flights
+    that are between the boundaries of user requirements.
+    Your response should follow a json schema like the following:
+    { "flights: [
+    {
+              "id": "ABC123",
+              "from": "JFK",
+              "to": "LAX",
+              "departure": "2025-06-10T08:00:00Z",
+              "arrival": "2025-06-10T11:00:00Z",
+              "price": 350
+            },
             {
-                      "id": "ABC123",
-                      "from": "JFK",
-                      "to": "LAX",
-                      "departure": "2025-06-10T08:00:00Z",
-                      "arrival": "2025-06-10T11:00:00Z",
-                      "price": 350
-                    },
-                    {
-                      "id": "ABC124",
-                      "from": "JFK1",
-                      "to": "LAX1",
-                      "departure": "2025-06-10T08:00:00Z",
-                      "arrival": "2025-06-10T11:00:00Z",
-                      "price": 351
-                    }
-                    ...
-            ]}
-            Do not include any explanations or text outside of the JSON structure.
-            If no flights are found then your response must be:
-            { "flights":[] }
-            """
+              "id": "ABC124",
+              "from": "JFK1",
+              "to": "LAX1",
+              "departure": "2025-06-10T08:00:00Z",
+              "arrival": "2025-06-10T11:00:00Z",
+              "price": 351
+            }
+            ...
+    ]}
+    Do not include any explanations or text outside of the JSON structure.
+    If no flights are found then your response must be:
+    { "flights":[] }
+    """
           .stripIndent();
 
   public Effect<FlightAPIResponseList> findFlights(String question) {
@@ -63,8 +63,8 @@ public class FlightSearchAgent extends Agent {
     return found.stream()
         .filter(
             flight -> {
-              return flight.departure().toLocalDate().equals(outboundParam.toLocalDate())
-                  || flight.returnLeg().toLocalDate().equals(returnLegParam.toLocalDate());
+              return (flight.departure().toLocalDate().equals(outboundParam.toLocalDate())
+                  || flight.returnLeg().toLocalDate().equals(returnLegParam.toLocalDate()));
             })
         .toList();
   }

@@ -17,7 +17,6 @@ public record FlightAPIResponse(
     ZonedDateTime departure,
     ZonedDateTime returnLeg,
     int price) {
-
   private static final Logger log = LoggerFactory.getLogger(FlightAPIResponse.class);
 
   public static List<FlightAPIResponse> extract(InputStream json) {

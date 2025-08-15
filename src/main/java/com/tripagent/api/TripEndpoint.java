@@ -89,7 +89,7 @@ public class TripEndpoint {
 
   enum Status {
     BOOKED,
-    AVAILABLE
+    AVAILABLE,
   }
 
   @Get("/flight/{id}")

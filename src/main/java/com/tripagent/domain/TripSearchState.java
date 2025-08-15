@@ -6,7 +6,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public record TripSearchState(String userRequest, Trip trip, RequestStatus requestState) {
-
   public TripSearchState withFlights(List<Flight> flights) {
     return new TripSearchState(
         userRequest, new Trip(flights, this.trip.accommodations), this.requestState);
@@ -32,12 +31,11 @@ public record TripSearchState(String userRequest, Trip trip, RequestStatus reque
       this(tag, Optional.empty());
     }
   }
-  ;
 
   public enum StatusTag {
     STARTED,
     SUCCESSFULLY_FINISHED,
-    FAILED
+    FAILED,
   }
 
   public static boolean findEmail(String request) {

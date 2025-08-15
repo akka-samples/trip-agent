@@ -10,13 +10,12 @@ public record Flight(
     ZonedDateTime arrival,
     int price,
     Status status) {
-
   public Flight withStatus(Status status) {
     return new Flight(id, from, to, departure, arrival, price, status);
   }
 
   public enum Status {
     AVAILABLE,
-    BOOKED
+    BOOKED,
   }
 }

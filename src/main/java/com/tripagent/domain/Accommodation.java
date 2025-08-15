@@ -10,13 +10,12 @@ public record Accommodation(
     ZonedDateTime checkout,
     int pricePerNight,
     Status status) {
-
   public Accommodation withStatus(Status status) {
     return new Accommodation(id, name, neighborhood, checkin, checkout, pricePerNight, status);
   }
 
   public enum Status {
     AVAILABLE,
-    BOOKED
+    BOOKED,
   }
 }
