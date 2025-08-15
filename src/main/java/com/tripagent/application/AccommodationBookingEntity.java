@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 @ComponentId("accommodation-booking-specialist")
 public class AccommodationBookingEntity
-  extends EventSourcedEntity<Accommodation, AccommodationEvent> {
+    extends EventSourcedEntity<Accommodation, AccommodationEvent> {
 
   private static final Logger log = LoggerFactory.getLogger(AccommodationBookingEntity.class);
 
@@ -18,8 +18,8 @@ public class AccommodationBookingEntity
     if (currentState() == null) {
       log.info("Loading accommodation {} into the system.", accommodation);
       return effects()
-        .persist(new AccommodationEvent.AccommodationFound(accommodation))
-        .thenReply(__ -> Done.done());
+          .persist(new AccommodationEvent.AccommodationFound(accommodation))
+          .thenReply(__ -> Done.done());
     } else {
       log.warn("The accommodation {} is exists already.", accommodation);
       return effects().reply(Done.done());
@@ -29,14 +29,10 @@ public class AccommodationBookingEntity
   public Effect<Boolean> book() {
     if (currentState().status().equals(Accommodation.Status.AVAILABLE)) {
       log.info("Requesting to book {}.", currentState());
-      return effects()
-        .persist(new AccommodationEvent.AccommodationSold())
-        .thenReply(__ -> true);
+      return effects().persist(new AccommodationEvent.AccommodationSold()).thenReply(__ -> true);
     } else {
       log.warn(
-        "The accommodation {} is not `available` anymore. Can't be requested",
-        currentState()
-      );
+          "The accommodation {} is not `available` anymore. Can't be requested", currentState());
       return effects().reply(false);
     }
   }
@@ -52,11 +48,10 @@ public class AccommodationBookingEntity
   @Override
   public Accommodation applyEvent(AccommodationEvent bookingAccommodationEvent) {
     return switch (bookingAccommodationEvent) {
-      case AccommodationEvent.AccommodationFound ff -> ff
-        .accommodation()
-        .withStatus(Accommodation.Status.AVAILABLE);
-      case AccommodationEvent.AccommodationSold ignored -> currentState()
-        .withStatus(Accommodation.Status.BOOKED);
+      case AccommodationEvent.AccommodationFound ff ->
+          ff.accommodation().withStatus(Accommodation.Status.AVAILABLE);
+      case AccommodationEvent.AccommodationSold ignored ->
+          currentState().withStatus(Accommodation.Status.BOOKED);
     };
   }
 }

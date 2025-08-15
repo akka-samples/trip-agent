@@ -1,5 +1,8 @@
 package com.tripagent.application;
 
+import java.util.List;
+import java.util.Optional;
+
 import static com.tripagent.domain.TripSearchState.StatusTag.FAILED;
 import static com.tripagent.domain.TripSearchState.StatusTag.STARTED;
 import static com.tripagent.domain.TripSearchState.StatusTag.SUCCESSFULLY_FINISHED;
@@ -15,8 +18,6 @@ import com.tripagent.application.agents.MailSenderAgent;
 import com.tripagent.domain.Accommodation;
 import com.tripagent.domain.Flight;
 import com.tripagent.domain.TripSearchState;
-import java.util.List;
-import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -34,11 +35,11 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
   @Override
   public WorkflowSettings settings() {
     return WorkflowSettings.builder()
-      .defaultStepRecovery(maxRetries(0).failoverTo(TripAgentWorkflow::errorHandlerStep))
-      .stepTimeout(TripAgentWorkflow::searchFlightsStep, ofSeconds(60))
-      .stepTimeout(TripAgentWorkflow::searchAccommodationsStep, ofSeconds(60))
-      .stepTimeout(TripAgentWorkflow::sendEmailStep, ofSeconds(90))
-      .build();
+        .defaultStepRecovery(maxRetries(0).failoverTo(TripAgentWorkflow::errorHandlerStep))
+        .stepTimeout(TripAgentWorkflow::searchFlightsStep, ofSeconds(60))
+        .stepTimeout(TripAgentWorkflow::searchAccommodationsStep, ofSeconds(60))
+        .stepTimeout(TripAgentWorkflow::sendEmailStep, ofSeconds(90))
+        .build();
   }
 
   // Step 1 look for flights
@@ -49,9 +50,9 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
     storeFlights(flights);
 
     return stepEffects()
-      .updateState(currentState().withFlights(flights))
-      .thenTransitionTo(TripAgentWorkflow::searchAccommodationsStep)
-      .withInput(currentState().userRequest());
+        .updateState(currentState().withFlights(flights))
+        .thenTransitionTo(TripAgentWorkflow::searchAccommodationsStep)
+        .withInput(currentState().userRequest());
   }
 
   // Step 2 look for accommodations
@@ -59,31 +60,28 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
   private StepEffect searchAccommodationsStep(String question) {
     var response = findAccommodations(question);
 
-    List<Accommodation> accommodations = AccommodationMapper.mapAccommodations(
-      response.accommodations()
-    );
+    List<Accommodation> accommodations =
+        AccommodationMapper.mapAccommodations(response.accommodations());
     storeAccommodations(accommodations);
 
     return stepEffects()
-      .updateState(currentState().withAccommodations(accommodations))
-      .thenTransitionTo(TripAgentWorkflow::sendEmailStep);
+        .updateState(currentState().withAccommodations(accommodations))
+        .thenTransitionTo(TripAgentWorkflow::sendEmailStep);
   }
 
   // Step 3 send mail
   @StepName("send-email")
   private StepEffect sendEmailStep() {
     sendMail(
-      currentState().userRequest(),
-      currentState().trip().flights(),
-      currentState().trip().accommodations()
-    );
+        currentState().userRequest(),
+        currentState().trip().flights(),
+        currentState().trip().accommodations());
 
     return stepEffects()
-      .updateState(
-        currentState()
-          .withRequestStatus(new TripSearchState.RequestStatus(SUCCESSFULLY_FINISHED))
-      )
-      .thenEnd();
+        .updateState(
+            currentState()
+                .withRequestStatus(new TripSearchState.RequestStatus(SUCCESSFULLY_FINISHED)))
+        .thenEnd();
   }
 
   // Step 4 deal with errors
@@ -92,10 +90,8 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
     log.error("Trip request failed. Current state {}", currentState());
 
     return stepEffects()
-      .updateState(
-        currentState().withRequestStatus(new TripSearchState.RequestStatus(FAILED))
-      )
-      .thenEnd();
+        .updateState(currentState().withRequestStatus(new TripSearchState.RequestStatus(FAILED)))
+        .thenEnd();
   }
 
   public ReadOnlyEffect<Optional<TripSearchState>> getState() {
@@ -107,101 +103,87 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
   }
 
   public Effect<String> startSearch(String userRequest) {
-    TripSearchState initialState = new TripSearchState(
-      userRequest,
-      TripSearchState.Trip.empty(),
-      new TripSearchState.RequestStatus(STARTED)
-    );
+    TripSearchState initialState =
+        new TripSearchState(
+            userRequest, TripSearchState.Trip.empty(), new TripSearchState.RequestStatus(STARTED));
     return effects()
-      .updateState(initialState)
-      .transitionTo(TripAgentWorkflow::searchFlightsStep)
-      .withInput(userRequest)
-      .thenReply(
-        "We are processing your Request. We'll send you the response to your email in a minute. Your request id is: " +
-        commandContext().workflowId()
-      );
+        .updateState(initialState)
+        .transitionTo(TripAgentWorkflow::searchFlightsStep)
+        .withInput(userRequest)
+        .thenReply(
+            "We are processing your Request. We'll send you the response to your email in a minute. Your request id is: "
+                + commandContext().workflowId());
   }
 
   private FlightSearchAgent.FlightAPIResponseList findFlights(String userRequest) {
     log.info("looking for flights");
     return componentClient
-      .forAgent()
-      .inSession(sessionId())
-      .method(FlightSearchAgent::findFlights)
-      .invoke(
-        String.format(
-          """
+        .forAgent()
+        .inSession(sessionId())
+        .method(FlightSearchAgent::findFlights)
+        .invoke(
+            String.format(
+                """
           find ONLY flights within the following constraints %s. Ignore any constraints that don't refer flights
           If some error shows in the tool you are using do not provide any flights.
           """,
-          userRequest
-        )
-      );
+                userRequest));
   }
 
   private void storeFlights(List<Flight> chatResponseFlights) {
     // load flights into entities
-    chatResponseFlights.forEach(flight -> {
-      componentClient
-        .forEventSourcedEntity(flight.id())
-        .method(FlightBookingEntity::create)
-        .invoke(flight);
-    });
+    chatResponseFlights.forEach(
+        flight -> {
+          componentClient
+              .forEventSourcedEntity(flight.id())
+              .method(FlightBookingEntity::create)
+              .invoke(flight);
+        });
   }
 
   private AccommodationSearchAgent.AccommodationAPIResponseList findAccommodations(
-    String question
-  ) {
+      String question) {
     log.info("looking for accommodations");
     return componentClient
-      .forAgent()
-      .inSession(sessionId())
-      .method(AccommodationSearchAgent::findAccommodations)
-      .invoke(
-        String.format(
-          """
+        .forAgent()
+        .inSession(sessionId())
+        .method(AccommodationSearchAgent::findAccommodations)
+        .invoke(
+            String.format(
+                """
           find ONLY accommodations within the following constraints %s. Ignore any constraints that don't refer accommodations
           If some error shows in the tool you are using do not provide any accommodations.
           """,
-          question
-        )
-      );
+                question));
   }
 
   private void storeAccommodations(List<Accommodation> chatResponseAccommodations) {
     // load accommodations into entities
-    chatResponseAccommodations.forEach(accommodation -> {
-      componentClient
-        .forEventSourcedEntity(accommodation.id())
-        .method(AccommodationBookingEntity::create)
-        .invoke(accommodation);
-    });
+    chatResponseAccommodations.forEach(
+        accommodation -> {
+          componentClient
+              .forEventSourcedEntity(accommodation.id())
+              .method(AccommodationBookingEntity::create)
+              .invoke(accommodation);
+        });
   }
 
-  private void sendMail(
-    String request,
-    List<Flight> flights,
-    List<Accommodation> accommodations
-  ) {
+  private void sendMail(String request, List<Flight> flights, List<Accommodation> accommodations) {
     log.info("sending mail");
-    String responseMail = componentClient
-      .forAgent()
-      .inSession(sessionId())
-      .method(MailSenderAgent::sendMail)
-      .invoke(
-        String.format(
-          """
+    String responseMail =
+        componentClient
+            .forAgent()
+            .inSession(sessionId())
+            .method(MailSenderAgent::sendMail)
+            .invoke(
+                String.format(
+                    """
           You are allowed to use the @tool function only once in this conversation. Do not use it more than once, even if more information becomes available
           Send an email to the email provided in %s, using the requestId provide in %s and the content from %s and %s. The content has flights and accommodations
           Add in the email a recommendation with the best value combination flight (outbound and return) and accommodation
           parse the whole content as HTML before sending
           """,
-          request,
-          request,
-          flights,
-          accommodations
-        )
-      );
+                    request, request, flights, accommodations));
     log.debug(String.format("responseMail %s", responseMail));
   }
 

@@ -1,8 +1,9 @@
 package com.tripagent.application;
 
+import java.util.List;
+
 import com.tripagent.application.agents.tools.FlightAPIResponse;
 import com.tripagent.domain.Flight;
-import java.util.List;
 
 public class FlightMapper {
 
@@ -12,13 +13,6 @@ public class FlightMapper {
 
   public static Flight mapFlight(FlightAPIResponse f) {
     return new Flight(
-      f.id(),
-      f.from(),
-      f.to(),
-      f.departure(),
-      f.returnLeg(),
-      f.price(),
-      Flight.Status.AVAILABLE
-    );
+        f.id(), f.from(), f.to(), f.departure(), f.returnLeg(), f.price(), Flight.Status.AVAILABLE);
   }
 }
