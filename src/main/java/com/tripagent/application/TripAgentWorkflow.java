@@ -35,7 +35,8 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
   @Override
   public WorkflowSettings settings() {
     return WorkflowSettings.builder()
-        .defaultStepRecovery(RecoverStrategy.maxRetries(0).failoverTo(TripAgentWorkflow::errorHandlerStep))
+        .defaultStepRecovery(
+            RecoverStrategy.maxRetries(0).failoverTo(TripAgentWorkflow::errorHandlerStep))
         .stepTimeout(TripAgentWorkflow::searchFlightsStep, ofSeconds(60))
         .stepTimeout(TripAgentWorkflow::searchAccommodationsStep, ofSeconds(60))
         .stepTimeout(TripAgentWorkflow::sendEmailStep, ofSeconds(90))

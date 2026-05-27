@@ -22,8 +22,8 @@
   <properties>
     <spring-ai.version>1.0.0-M6</spring-ai.version>
     <angus-mail.version>2.0.3</angus-mail.version>
-    <spotless.version>2.44.3</spotless.version>
-    <google-java-format.version>1.24.0</google-java-format.version>
+    <spotless.version>3.5.1</spotless.version>
+    <google-java-format.version>1.35.0</google-java-format.version>
   </properties>
 
 <build>
