@@ -1,14 +1,14 @@
 package com.tripagent.application;
 
 import akka.Done;
-import akka.javasdk.annotations.ComponentId;
+import akka.javasdk.annotations.Component;
 import akka.javasdk.eventsourcedentity.EventSourcedEntity;
 import com.tripagent.domain.Accommodation;
 import com.tripagent.domain.AccommodationEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@ComponentId("accommodation-booking-specialist")
+@Component(id = "accommodation-booking-specialist")
 public class AccommodationBookingEntity
     extends EventSourcedEntity<Accommodation, AccommodationEvent> {
 

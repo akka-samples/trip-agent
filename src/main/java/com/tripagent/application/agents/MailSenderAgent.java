@@ -1,11 +1,11 @@
 package com.tripagent.application.agents;
 
 import akka.javasdk.agent.Agent;
-import akka.javasdk.annotations.ComponentId;
+import akka.javasdk.annotations.Component;
 import akka.javasdk.annotations.FunctionTool;
 import com.tripagent.application.agents.tools.EmailAPIToolHelper;
 
-@ComponentId("mail-sender-agent")
+@Component(id = "mail-sender-agent")
 public class MailSenderAgent extends Agent {
 
   private static final String SYSTEM_MESSAGE =

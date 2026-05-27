@@ -5,11 +5,11 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 import akka.javasdk.agent.Agent;
-import akka.javasdk.annotations.ComponentId;
+import akka.javasdk.annotations.Component;
 import akka.javasdk.annotations.FunctionTool;
 import com.tripagent.application.agents.tools.AccommodationAPIResponse;
 
-@ComponentId("search-accommodation-agent")
+@Component(id = "search-accommodation-agent")
 public class AccommodationSearchAgent extends Agent {
 
   private static final String SYSTEM_MESSAGE =
