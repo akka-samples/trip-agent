@@ -1,14 +1,14 @@
 package com.tripagent.application;
 
 import akka.Done;
-import akka.javasdk.annotations.ComponentId;
+import akka.javasdk.annotations.Component;
 import akka.javasdk.eventsourcedentity.EventSourcedEntity;
 import com.tripagent.domain.Flight;
 import com.tripagent.domain.FlightEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@ComponentId("flight-booking-specialist")
+@Component(id = "flight-booking-specialist")
 public class FlightBookingEntity extends EventSourcedEntity<Flight, FlightEvent> {
 
   private static final Logger log = LoggerFactory.getLogger(FlightBookingEntity.class);

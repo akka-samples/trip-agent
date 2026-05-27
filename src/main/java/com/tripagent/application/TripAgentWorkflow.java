@@ -8,7 +8,7 @@ import static com.tripagent.domain.TripSearchState.StatusTag.STARTED;
 import static com.tripagent.domain.TripSearchState.StatusTag.SUCCESSFULLY_FINISHED;
 import static java.time.Duration.ofSeconds;
 
-import akka.javasdk.annotations.ComponentId;
+import akka.javasdk.annotations.Component;
 import akka.javasdk.annotations.StepName;
 import akka.javasdk.client.ComponentClient;
 import akka.javasdk.workflow.Workflow;
@@ -21,7 +21,7 @@ import com.tripagent.domain.TripSearchState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@ComponentId("trip-agent")
+@Component(id = "trip-agent")
 public class TripAgentWorkflow extends Workflow<TripSearchState> {
 
   private static final Logger log = LoggerFactory.getLogger(TripAgentWorkflow.class);
@@ -35,7 +35,7 @@ public class TripAgentWorkflow extends Workflow<TripSearchState> {
   @Override
   public WorkflowSettings settings() {
     return WorkflowSettings.builder()
-        .defaultStepRecovery(maxRetries(0).failoverTo(TripAgentWorkflow::errorHandlerStep))
+        .defaultStepRecovery(RecoverStrategy.maxRetries(0).failoverTo(TripAgentWorkflow::errorHandlerStep))
         .stepTimeout(TripAgentWorkflow::searchFlightsStep, ofSeconds(60))
         .stepTimeout(TripAgentWorkflow::searchAccommodationsStep, ofSeconds(60))
         .stepTimeout(TripAgentWorkflow::sendEmailStep, ofSeconds(90))
